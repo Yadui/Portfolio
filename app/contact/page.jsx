@@ -3,6 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -25,12 +28,12 @@ const info = [
   {
     icon: <FaEnvelope />,
     title: "Email",
-    description: "yourEmail@gmail.com",
+    description: "abhinavyadav8@gmail.com",
   },
   {
     icon: <FaMapMarkedAlt />,
     title: "Address",
-    description: "Code Corner",
+    description: "Gurugram, Haryana",
   },
 ];
 import { motion } from "framer-motion";
@@ -43,7 +46,7 @@ const Contact = () => {
         opacity: 1,
         transition: { delay: 2.4, duration: 0.4, ease: "easeIn" },
       }}
-      className="py-6"
+      className="py-10"
     >
       <div className="container mx-auto">
         <div className="flex flex-col xl:flex-row gap-[30px]">
@@ -55,8 +58,8 @@ const Contact = () => {
             >
               <h3 className="text-4xl text-accent">Lets Work together</h3>
               <p className="text-white/60">
-                Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem
-                Ipsum Lorem Ipsum{" "}
+                Collaborate with me to bring your ideas to life with creativity
+                and precision.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Input
@@ -81,10 +84,10 @@ const Contact = () => {
                 />
               </div>
               <Select>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full rounded-xl">
                   <SelectValue placeholder="Select a service" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-primary rounded-xl">
                   <SelectGroup>
                     <SelectLabel>Select a service</SelectLabel>
                     <SelectItem value="est">Web dev</SelectItem>
@@ -95,7 +98,7 @@ const Contact = () => {
               </Select>
               {/* textarea */}
               <Textarea
-                className="h-[200px]"
+                className="h-[200px] resize-none rounded-xl"
                 placeholder="Type your message here."
               />
               {/* btn */}
@@ -104,12 +107,19 @@ const Contact = () => {
               </Button>
             </form>
           </div>
-          <div className="flex-1 flex items-center xl:justify-end xl:order-1 mb-8 xl:mb-0">
-            <ul className="flex flex-col gap-10">
+          <div className="flex-1 flex items-center xl:justify-end xl:order-1 mb-8 xl:mb-0 xl:text-left">
+            <ul className="flex flex-col gap-10 sm:flex">
+              <Image
+                src="/assets-1/Abhinav_Yadav.png"
+                width={200}
+                height={200}
+                alt="contact qr"
+                className="w-80 h-80 rounded-xl hover:scale-110 transition-all ease-in-out xl:justify-center"
+              />
               {info.map((item, index) => {
                 return (
                   <li key={index} className="flex items-center gap-6">
-                    <div className="w-[52px] h-[52px] xl:h-[72px] xl:w-[72px] bg-[#27272c] text-accent rounded-full flex items-center justify-center">
+                    <div className="w-[52px] h-[52px] xl:h-[72px] xl:w-[72px] bg-[#27272c] text-accent rounded-full flex items-center justify-center ">
                       <div>{item.icon}</div>
                     </div>
                     <div>

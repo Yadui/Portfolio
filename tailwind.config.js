@@ -1,6 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
+  safelist: [
+    {
+      pattern:
+        /bg-(E44D26|1572B6|F7DF1E|61DBFB|F24E1E|68A063|3776AB|38BDF8|000000)/,
+    },
+  ],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",

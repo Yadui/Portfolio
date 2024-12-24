@@ -22,3 +22,9 @@
     -webkit-text-stroke: 1px #00ff99;
   }
 }
+
+@layer utilities {
+  .slow-spin {
+    animation: spin 4s linear infinite; /* Adjust 4s to your desired duration */
+  }
+}
