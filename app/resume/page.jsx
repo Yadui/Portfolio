@@ -517,8 +517,10 @@ const Resume = () => {
                 size="lg"
                 className="uppercase flex items-center gap-2 mt-6"
               >
-                <span>Download CV</span>
-                <FiDownload className="text-xl" />
+                <a href="./abhinav-cv.pdf" download="Abhinav_Yadav_CV.pdf">
+                  <span>Download CV</span>
+                  <FiDownload className="text-xl" />
+                </a>
               </Button>
               {/* PDF Viewer */}
               <div className="w-full h-[85vh] flex justify-center items-center">

@@ -13,11 +13,12 @@ const stats = [
   },
   {
     // use 10+ instead of 10
-    num: 10,
+    num: "5+",
     text: "Techonologies mastered",
   },
   {
-    num: 500,
+    // use 100+ instead of 100
+    num: 100,
     text: "Code commits",
   },
 ];
