@@ -16,19 +16,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FaPhoneAlt, FaEnvelope, FaMapMarkedAlt } from "react-icons/fa";
-import { Description } from "@radix-ui/react-dialog";
+import { FaEnvelope, FaMapMarkedAlt, FaLinkedin } from "react-icons/fa";
 
 const info = [
   {
-    icon: <FaPhoneAlt />,
-    title: "Phone",
-    description: "+91 9971208044",
+    icon: <FaLinkedin />,
+    description: "View Profile",
+    link: "https://www.linkedin.com/in/abhinavyadav88",
+    isExternal: true,
   },
   {
     icon: <FaEnvelope />,
-    title: "Email",
-    description: "abhinavyadav8@gmail.com",
+    description: "abhinavyadav8+port@gmail.com",
+    link: "mailto:abhinavyadav8+port@gmail.com",
+    isExternal: false,
   },
   {
     icon: <FaMapMarkedAlt />,
@@ -108,23 +109,50 @@ const Contact = () => {
             </form>
           </div>
           <div className="flex-1 flex items-center xl:justify-end xl:order-1 mb-8 xl:mb-0 xl:text-left">
-            <ul className="flex flex-col gap-10 sm:flex">
-              <Image
+            <ul className="flex flex-row xl:flex-col gap-10 flex-wrap justify-center w-full bg-[#27272c] p-8 rounded-xl">
+              {/* <Image
                 src="/assets-1/Abhinav_Yadav.png"
                 width={200}
                 height={200}
                 alt="contact qr"
                 className="w-80 h-80 rounded-xl hover:scale-110 transition-all ease-in-out xl:justify-center"
-              />
+              /> */}
               {info.map((item, index) => {
                 return (
                   <li key={index} className="flex items-center gap-6">
                     <div className="w-[52px] h-[52px] xl:h-[72px] xl:w-[72px] bg-[#27272c] text-accent rounded-full flex items-center justify-center ">
-                      <div>{item.icon}</div>
+                      {item.link ? (
+                        <a
+                          href={item.link}
+                          target={item.isExternal ? "_blank" : "_self"}
+                          rel={item.isExternal ? "noopener noreferrer" : ""}
+                          className="hover:scale-125 transition-all"
+                        >
+                          <div>{item.icon}</div>
+                        </a>
+                      ) : (
+                        <div>{item.icon}</div>
+                      )}
                     </div>
                     <div>
-                      <p>{item.title}</p>
-                      <h3>{item.description}</h3>
+                      {item.link ? (
+                        <a
+                          href={item.link}
+                          target={item.isExternal ? "_blank" : "_self"}
+                          rel={item.isExternal ? "noopener noreferrer" : ""}
+                          className="hover:text-accent transition-all"
+                        >
+                          <p className="mb-1">{item.title}</p>
+                          <h3 className={!item.isExternal ? "underline" : ""}>
+                            {item.description}
+                          </h3>
+                        </a>
+                      ) : (
+                        <>
+                          <p>{item.title}</p>
+                          <h3>{item.description}</h3>
+                        </>
+                      )}
                     </div>
                   </li>
                 );
