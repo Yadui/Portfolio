@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Icons
-import { FiDownload } from "react-icons/fi";
+import { FiDownload, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import {
   FaHtml5,
   FaCss3,
@@ -293,10 +293,18 @@ const skills = {
 
 const Resume = () => {
   const [isClient, setIsClient] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("experience");
 
   React.useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Function to handle tab changes
+  const handleTabChange = (value) => {
+    setActiveTab(value);
+    setIsMenuOpen(false);
+  };
 
   const getIcon = (iconName) => {
     const icons = {
@@ -338,169 +346,110 @@ const Resume = () => {
       <div className="container mx-auto">
         <Tabs
           defaultValue="experience"
+          value={activeTab}
+          onValueChange={setActiveTab}
           className="flex flex-col xl:flex-row gap-[60px]"
         >
-          <TabsList className="flex flex-col w-full max-w-[380px] mx-auto xl:mx-0 gap-6 text-white">
-            <div className="flex flex-col gap-8">
-              <h3 className="text-5xl text-left"> Why hire me?</h3>
-              <p>
-                Check out my details, maybe you will find something intresting!
+          {/* Mobile dropdown for sm screens */}
+          <div className="xl:hidden w-full mb-8">
+            <div className="mb-4">
+              <h3 className="text-3xl font-bold text-left">Why hire me?</h3>
+              <p className="text-white/70 mt-2">
+                Check out my details, maybe you will find something interesting!
               </p>
             </div>
-            {/* <TabsTrigger value="text">why hire me?</TabsTrigger> */}
+
+            <div className="relative">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="flex items-center justify-between w-full bg-[#232329] p-4 rounded-xl text-white"
+              >
+                <span className="text-lg font-medium">
+                  {activeTab === "experience" && "Experience"}
+                  {activeTab === "education" && "Education"}
+                  {activeTab === "skills" && "Skills"}
+                  {activeTab === "about" && "About me"}
+                  {activeTab === "file" && "Resume File"}
+                </span>
+                {isMenuOpen ? (
+                  <FiChevronUp className="text-xl" />
+                ) : (
+                  <FiChevronDown className="text-xl" />
+                )}
+              </button>
+
+              {isMenuOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-[#1c1c21] p-4 rounded-xl z-10 shadow-lg border border-[#232329]">
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={() => handleTabChange("experience")}
+                      className={`text-left p-2 hover:bg-[#232329] rounded transition-colors ${
+                        activeTab === "experience"
+                          ? "bg-[#232329] text-accent"
+                          : ""
+                      }`}
+                    >
+                      Experience
+                    </button>
+                    <button
+                      onClick={() => handleTabChange("education")}
+                      className={`text-left p-2 hover:bg-[#232329] rounded transition-colors ${
+                        activeTab === "education"
+                          ? "bg-[#232329] text-accent"
+                          : ""
+                      }`}
+                    >
+                      Education
+                    </button>
+                    <button
+                      onClick={() => handleTabChange("skills")}
+                      className={`text-left p-2 hover:bg-[#232329] rounded transition-colors ${
+                        activeTab === "skills" ? "bg-[#232329] text-accent" : ""
+                      }`}
+                    >
+                      Skills
+                    </button>
+                    <button
+                      onClick={() => handleTabChange("about")}
+                      className={`text-left p-2 hover:bg-[#232329] rounded transition-colors ${
+                        activeTab === "about" ? "bg-[#232329] text-accent" : ""
+                      }`}
+                    >
+                      About me
+                    </button>
+                    <button
+                      onClick={() => handleTabChange("file")}
+                      className={`text-left p-2 hover:bg-[#232329] rounded transition-colors ${
+                        activeTab === "file" ? "bg-[#232329] text-accent" : ""
+                      }`}
+                    >
+                      Resume File
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop TabsList - hide on small screens */}
+          <TabsList className="hidden xl:flex flex-col w-full max-w-[380px] mx-auto xl:mx-0 gap-6 text-white">
+            <div className="flex flex-col gap-8">
+              <h3 className="text-5xl text-left"> Why hire me?</h3>
+              <p>Check out my deta im abhinav</p>
+            </div>
             <TabsTrigger value="experience">Experience</TabsTrigger>
             <TabsTrigger value="education">Education</TabsTrigger>
             <TabsTrigger value="skills">Skills</TabsTrigger>
             <TabsTrigger value="about">About me</TabsTrigger>
             <TabsTrigger value="file">Resume File</TabsTrigger>
-            {/* <TabsTrigger value="download"> */}
-            {/* Download Button
-              <Button
-                variant="outline"
-                size="lg"
-                className="uppercase flex justify-center items-center gap-2 mt-4"
-              >
-                <span>Download CV</span>
-                <FiDownload className="text-xl" />
-              </Button> */}
-            {/* </TabsTrigger> */}
           </TabsList>
+
           {/* content */}
-          <div className="min-h-[70vh] w-full">
+          <div className="min-h-[70vh] w-full flex flex-col items-start justify-start">
             {/* experience */}
             <TabsContent value="experience" className="w-full">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
-                  },
-                }}
-                className="flex flex-col gap-[30px] p-10 pl-0 text-center xl:text-left"
-              >
-                <h3 className="text-4xl font-bold">{experience.title}</h3>
-                <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
-                  {experience.description}
-                </p>
-              </motion.div>
               {isClient && (
-                <ScrollArea className="h-[400px]">
-                  <motion.ul
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    variants={{
-                      hidden: {},
-                      visible: {
-                        transition: {
-                          staggerChildren: 0.1,
-                        },
-                      },
-                    }}
-                    className="grid grid-cols-1 lg:grid-cols-2 gap-[30px]"
-                  >
-                    {experience.items.map((item, index) => (
-                      <motion.li
-                        key={index}
-                        variants={{
-                          hidden: { opacity: 0, scale: 0.8 },
-                          visible: {
-                            opacity: 1,
-                            scale: 1,
-                            transition: { duration: 0.4, ease: "easeOut" },
-                          },
-                        }}
-                        className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
-                      >
-                        <span className="text-accent">{item.duration}</span>
-                        <h3 className="text-xl max-w-[260px] min-h-[60px] text-center lg:text-left">
-                          {item.position}
-                        </h3>
-                        <div className="flex items-center gap-3">
-                          <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
-                          <p className="text-white/60">{item.company}</p>
-                        </div>
-                      </motion.li>
-                    ))}
-                  </motion.ul>
-                </ScrollArea>
-              )}
-            </TabsContent>
-
-            {/* Education */}
-            <TabsContent value="education" className="w-full">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
-                  },
-                }}
-                className="flex flex-col gap-[30px] p-10 pl-0 text-center xl:text-left"
-              >
-                <h3 className="text-4xl font-bold">{education.title}</h3>
-                <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
-                  {education.description}
-                </p>
-              </motion.div>
-              {isClient && (
-                <ScrollArea className="h-[400px]">
-                  <motion.ul
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    variants={{
-                      hidden: {},
-                      visible: {
-                        transition: {
-                          staggerChildren: 0.1, // Stagger child animations
-                        },
-                      },
-                    }}
-                    className="grid grid-cols-1 lg:grid-cols-2 gap-[30px]"
-                  >
-                    {education.items.map((item, index) => (
-                      <motion.li
-                        key={index}
-                        variants={{
-                          hidden: { opacity: 0, scale: 0.8 },
-                          visible: {
-                            opacity: 1,
-                            scale: 1,
-                            transition: { duration: 0.4, ease: "easeOut" },
-                          },
-                        }}
-                        className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
-                      >
-                        <span className="text-accent">{item.duration}</span>
-                        <h3 className="text-xl max-w-[260px] min-h-[60px] text-center lg:text-left">
-                          {item.degree}
-                        </h3>
-                        <div className="flex items-center gap-3">
-                          <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
-                          <p className="text-white/60"> {item.institution}</p>
-                        </div>
-                      </motion.li>
-                    ))}
-                  </motion.ul>
-                </ScrollArea>
-              )}
-            </TabsContent>
-
-            {/* skills */}
-            <TabsContent value="skills" className="w-full h-full">
-              {isClient && (
-                <div className="flex flex-col gap-[30px]">
+                <div className="flex flex-col gap-[30px] pt-0 mt-0">
                   {/* Title and Description */}
                   <motion.div
                     initial="hidden"
@@ -514,7 +463,143 @@ const Resume = () => {
                         transition: { duration: 0.6, ease: "easeOut" },
                       },
                     }}
-                    className="flex flex-col gap-[30px] text-center xl:text-left"
+                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
+                  >
+                    <h3 className="text-4xl font-bold">{experience.title}</h3>
+                    <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
+                      {experience.description}
+                    </p>
+                  </motion.div>
+
+                  <ScrollArea className="h-[400px] pt-0 mt-0">
+                    <motion.ul
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.2 }}
+                      variants={{
+                        hidden: {},
+                        visible: {
+                          transition: {
+                            staggerChildren: 0.1,
+                          },
+                        },
+                      }}
+                      className="grid grid-cols-1 lg:grid-cols-2 gap-[30px]"
+                    >
+                      {experience.items.map((item, index) => (
+                        <motion.li
+                          key={index}
+                          variants={{
+                            hidden: { opacity: 0, scale: 0.8 },
+                            visible: {
+                              opacity: 1,
+                              scale: 1,
+                              transition: { duration: 0.4, ease: "easeOut" },
+                            },
+                          }}
+                          className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
+                        >
+                          <span className="text-accent">{item.duration}</span>
+                          <h3 className="text-xl max-w-[260px] min-h-[60px] text-center lg:text-left">
+                            {item.position}
+                          </h3>
+                          <div className="flex items-center gap-3">
+                            <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
+                            <p className="text-white/60">{item.company}</p>
+                          </div>
+                        </motion.li>
+                      ))}
+                    </motion.ul>
+                  </ScrollArea>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Education */}
+            <TabsContent value="education" className="w-full">
+              {isClient && (
+                <div className="flex flex-col gap-[30px] pt-0 mt-0">
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 30 },
+                      visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.6, ease: "easeOut" },
+                      },
+                    }}
+                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
+                  >
+                    <h3 className="text-4xl font-bold">{education.title}</h3>
+                    <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
+                      {education.description}
+                    </p>
+                  </motion.div>
+                  <ScrollArea className="h-[400px] pt-0 mt-0">
+                    <motion.ul
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.2 }}
+                      variants={{
+                        hidden: {},
+                        visible: {
+                          transition: {
+                            staggerChildren: 0.1, // Stagger child animations
+                          },
+                        },
+                      }}
+                      className="grid grid-cols-1 lg:grid-cols-2 gap-[30px]"
+                    >
+                      {education.items.map((item, index) => (
+                        <motion.li
+                          key={index}
+                          variants={{
+                            hidden: { opacity: 0, scale: 0.8 },
+                            visible: {
+                              opacity: 1,
+                              scale: 1,
+                              transition: { duration: 0.4, ease: "easeOut" },
+                            },
+                          }}
+                          className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
+                        >
+                          <span className="text-accent">{item.duration}</span>
+                          <h3 className="text-xl max-w-[260px] min-h-[60px] text-center lg:text-left">
+                            {item.degree}
+                          </h3>
+                          <div className="flex items-center gap-3">
+                            <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
+                            <p className="text-white/60"> {item.institution}</p>
+                          </div>
+                        </motion.li>
+                      ))}
+                    </motion.ul>
+                  </ScrollArea>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* skills */}
+            <TabsContent value="skills" className="w-full">
+              {isClient && (
+                <div className="flex flex-col gap-[30px] pt-0 mt-0">
+                  {/* Title and Description */}
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 30 },
+                      visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.6, ease: "easeOut" },
+                      },
+                    }}
+                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
                   >
                     <h3 className="text-4xl font-bold">{skills.title}</h3>
                     <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
@@ -593,95 +678,92 @@ const Resume = () => {
             </TabsContent>
 
             {/* About Me */}
-            <TabsContent
-              value="about"
-              className="w-full text-center xl:text-left"
-            >
+            <TabsContent value="about" className="w-full">
               {isClient && (
-                <motion.div
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.5 }}
-                  variants={{
-                    hidden: { opacity: 0, y: 30 },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      transition: { duration: 0.6, ease: "easeOut" },
-                    },
-                  }}
-                  className="flex flex-col gap-[30px] p-10 pl-0"
-                >
-                  <h3 className="text-4xl font-bold">{about.title}</h3>
-                  <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
-                    {about.description}
-                  </p>
-                </motion.div>
-              )}
-              {isClient && (
-                <motion.ul
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
-                  variants={{
-                    hidden: {},
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.1, // Stagger child animations
+                <div className="flex flex-col gap-[30px] pt-0 mt-0">
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 30 },
+                      visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.6, ease: "easeOut" },
                       },
-                    },
-                  }}
-                  className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 max-w-[620px] mx-auto xl:mx-0"
-                >
-                  {about.info.map((item, index) => (
-                    <motion.li
-                      key={index}
-                      variants={{
-                        hidden: { opacity: 0, scale: 0.8 },
-                        visible: {
-                          opacity: 1,
-                          scale: 1,
-                          transition: { duration: 0.4, ease: "easeOut" },
+                    }}
+                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
+                  >
+                    <h3 className="text-4xl font-bold">{about.title}</h3>
+                    <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
+                      {about.description}
+                    </p>
+                  </motion.div>
+                  <motion.ul
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                    variants={{
+                      hidden: {},
+                      visible: {
+                        transition: {
+                          staggerChildren: 0.1,
                         },
-                      }}
-                      className="flex items-center justify-center xl:justify-start gap-4"
-                    >
-                      <span className="text-white/60">{item.fieldname} </span>
-                      <span className="text-xl text-accent">
-                        {item.fieldValue}
-                      </span>
-                    </motion.li>
-                  ))}
-                </motion.ul>
+                      },
+                    }}
+                    className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 max-w-[620px] mx-auto xl:mx-0 pt-0 mt-0"
+                  >
+                    {about.info.map((item, index) => (
+                      <motion.li
+                        key={index}
+                        variants={{
+                          hidden: { opacity: 0, scale: 0.8 },
+                          visible: {
+                            opacity: 1,
+                            scale: 1,
+                            transition: { duration: 0.4, ease: "easeOut" },
+                          },
+                        }}
+                        className="flex items-center justify-center xl:justify-start gap-4"
+                      >
+                        <span className="text-white/60">{item.fieldname} </span>
+                        <span className="text-xl text-accent">
+                          {item.fieldValue}
+                        </span>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                </div>
               )}
             </TabsContent>
 
             {/* resume download */}
-            <TabsContent
-              value="file"
-              className="container mx-auto h-full flex flex-col items-center justify-start gap-4"
-            >
+            <TabsContent value="file" className="w-full">
               {isClient && (
-                <>
-                  <div className="flex gap-4">
+                <div className="flex flex-col gap-[30px]">
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={{
+                      hidden: { opacity: 0, y: 30 },
+                      visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.6, ease: "easeOut" },
+                      },
+                    }}
+                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
+                  >
+                    <h3 className="text-4xl font-bold">Resume</h3>
+                  </motion.div>
+
+                  <div className="flex gap-4 justify-center xl:justify-start">
                     <Button
                       variant="outline"
                       size="lg"
-                      className="uppercase flex items-center gap-2 mt-6"
-                    >
-                      <a
-                        href="https://drive.google.com/file/d/1n4fiA99cs-kgsVu1q70QPPe6-1Zgb36f/view?usp=drive_link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <span>View Resume</span>
-                        <FiDownload className="text-xl" />
-                      </a>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="uppercase flex items-center gap-2 mt-6"
+                      className="uppercase flex items-center gap-2"
                     >
                       <a href="https://drive.google.com/uc?export=download&id=1n4fiA99cs-kgsVu1q70QPPe6-1Zgb36f">
                         <span>Download Resume</span>
@@ -689,14 +771,14 @@ const Resume = () => {
                       </a>
                     </Button>
                   </div>
-                  <div className="w-full h-[85vh] flex justify-center items-center">
+                  <div className="w-full h-[70vh] flex justify-center xl:justify-start -translate-x-3">
                     <iframe
                       src="https://drive.google.com/file/d/1n4fiA99cs-kgsVu1q70QPPe6-1Zgb36f/preview"
-                      className="w-[90%] h-full border-none"
+                      className="w-[90%] xl:w-full h-full border-none"
                       allow="autoplay"
                     />
                   </div>
-                </>
+                </div>
               )}
             </TabsContent>
           </div>
