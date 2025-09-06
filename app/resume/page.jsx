@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -445,33 +446,262 @@ const Resume = () => {
           </TabsList>
 
           {/* content */}
-          <div className="min-h-[70vh] w-full flex flex-col items-start justify-start">
-            {/* experience */}
-            <TabsContent value="experience" className="w-full">
-              {isClient && (
-                <div className="flex flex-col gap-[30px] pt-0 mt-0">
-                  {/* Title and Description */}
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.5 }}
-                    variants={{
-                      hidden: { opacity: 0, y: 30 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.6, ease: "easeOut" },
-                      },
-                    }}
-                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
-                  >
-                    <h3 className="text-4xl font-bold">{experience.title}</h3>
-                    <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
-                      {experience.description}
-                    </p>
-                  </motion.div>
+          <div className="min-h-[70vh] w-full flex flex-col xl:flex-row gap-[60px]">
+            <div className="flex-1 flex flex-col gap-8 w-full items-center xl:items-start">
+              {/* experience */}
+              <TabsContent value="experience" className="w-full">
+                {isClient && (
+                  <div className="flex flex-col gap-8 w-full">
+                    {/* Title and Description */}
+                    <motion.div
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.5 }}
+                      variants={{
+                        hidden: { opacity: 0, y: 30 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          transition: { duration: 0.6, ease: "easeOut" },
+                        },
+                      }}
+                      className="flex flex-col gap-4 text-center xl:text-left"
+                    >
+                      <h3 className="text-4xl font-bold">{experience.title}</h3>
+                      <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
+                        {experience.description}
+                      </p>
+                    </motion.div>
 
-                  <ScrollArea className="h-[400px] pt-0 mt-0">
+                    <ScrollArea className="h-[400px] w-full">
+                      <motion.ul
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.2 }}
+                        variants={{
+                          hidden: {},
+                          visible: {
+                            transition: {
+                              staggerChildren: 0.1,
+                            },
+                          },
+                        }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+                      >
+                        {experience.items.map((item, index) => (
+                          <motion.li
+                            key={index}
+                            variants={{
+                              hidden: { opacity: 0, scale: 0.8 },
+                              visible: {
+                                opacity: 1,
+                                scale: 1,
+                                transition: { duration: 0.4, ease: "easeOut" },
+                              },
+                            }}
+                            className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-2"
+                          >
+                            <span className="text-accent">{item.duration}</span>
+                            <h3 className="text-xl max-w-[260px] min-h-[60px] text-left">
+                              {item.position}
+                            </h3>
+                            <div className="flex items-center gap-3">
+                              <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
+                              <p className="text-white/60">{item.company}</p>
+                            </div>
+                          </motion.li>
+                        ))}
+                      </motion.ul>
+                    </ScrollArea>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Education */}
+              <TabsContent value="education" className="w-full">
+                {isClient && (
+                  <div className="flex flex-col gap-8 w-full">
+                    <motion.div
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.5 }}
+                      variants={{
+                        hidden: { opacity: 0, y: 30 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          transition: { duration: 0.6, ease: "easeOut" },
+                        },
+                      }}
+                      className="flex flex-col gap-4 text-center xl:text-left"
+                    >
+                      <h3 className="text-4xl font-bold">{education.title}</h3>
+                      <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
+                        {education.description}
+                      </p>
+                    </motion.div>
+                    <ScrollArea className="h-[400px] w-full">
+                      <motion.ul
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.2 }}
+                        variants={{
+                          hidden: {},
+                          visible: {
+                            transition: {
+                              staggerChildren: 0.1, // Stagger child animations
+                            },
+                          },
+                        }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+                      >
+                        {education.items.map((item, index) => (
+                          <motion.li
+                            key={index}
+                            variants={{
+                              hidden: { opacity: 0, scale: 0.8 },
+                              visible: {
+                                opacity: 1,
+                                scale: 1,
+                                transition: { duration: 0.4, ease: "easeOut" },
+                              },
+                            }}
+                            className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-2"
+                          >
+                            <span className="text-accent">{item.duration}</span>
+                            <h3 className="text-xl max-w-[260px] min-h-[60px] text-left">
+                              {item.degree}
+                            </h3>
+                            <div className="flex items-center gap-3">
+                              <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
+                              <p className="text-white/60"> {item.institution}</p>
+                            </div>
+                          </motion.li>
+                        ))}
+                      </motion.ul>
+                    </ScrollArea>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* skills */}
+              <TabsContent value="skills" className="w-full">
+                {isClient && (
+                  <div className="flex flex-col gap-8 w-full">
+                    {/* Title and Description */}
+                    <motion.div
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.5 }}
+                      variants={{
+                        hidden: { opacity: 0, y: 30 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          transition: { duration: 0.6, ease: "easeOut" },
+                        },
+                      }}
+                      className="flex flex-col gap-4 text-center xl:text-left"
+                    >
+                      <h3 className="text-4xl font-bold">{skills.title}</h3>
+                      <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
+                        {skills.description}
+                      </p>
+                    </motion.div>
+
+                    {/* Skills Categories */}
+                    <motion.div
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.2 }}
+                      variants={{
+                        hidden: {},
+                        visible: {
+                          transition: {
+                            staggerChildren: 0.1,
+                          },
+                        },
+                      }}
+                      className="flex flex-col gap-8"
+                    >
+                      {["IT", "Dev", "Data", "Tools"].map((category) => (
+                        <motion.div
+                          key={category}
+                          variants={{
+                            hidden: { opacity: 0, y: 20 },
+                            visible: {
+                              opacity: 1,
+                              y: 0,
+                              transition: { duration: 0.4, ease: "easeOut" },
+                            },
+                          }}
+                          className="bg-[#232329] p-6 rounded-xl"
+                        >
+                          <h4 className="text-xl font-semibold mb-6 text-accent">
+                            {category}
+                          </h4>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4 justify-items-center">
+                            {skills.skillList
+                              .filter((skill) => skill.category === category)
+                              .map((skill, index) => (
+                                <motion.div
+                                  key={index}
+                                  variants={{
+                                    hidden: { opacity: 0, scale: 0.8 },
+                                    visible: {
+                                      opacity: 1,
+                                      scale: 1,
+                                      transition: {
+                                        duration: 0.4,
+                                        ease: "easeOut",
+                                      },
+                                    },
+                                  }}
+                                  className="group relative flex flex-col justify-center items-center p-4 h-[100px] bg-[#1c1c21] rounded-xl overflow-hidden gap-2"
+                                >
+                                  <div
+                                    style={{ background: skill.bgHoverColor }}
+                                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                  />
+                                  <div className="relative z-10 flex items-center justify-center w-12 h-12">
+                                    {getIcon(skill.iconName)}
+                                  </div>
+                                  <span className="absolute bottom-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    {skill.name}
+                                  </span>
+                                </motion.div>
+                              ))}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* About Me */}
+              <TabsContent value="about" className="w-full">
+                {isClient && (
+                  <div className="flex flex-col gap-8 w-full">
+                    <motion.div
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.5 }}
+                      variants={{
+                        hidden: { opacity: 0, y: 30 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          transition: { duration: 0.6, ease: "easeOut" },
+                        },
+                      }}
+                      className="flex flex-col gap-4 text-center xl:text-left"
+                    >
+                      <h3 className="text-4xl font-bold">{about.title}</h3>
+                      <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
+                        {about.description}
+                      </p>
+                    </motion.div>
                     <motion.ul
                       initial="hidden"
                       whileInView="visible"
@@ -484,9 +714,9 @@ const Resume = () => {
                           },
                         },
                       }}
-                      className="grid grid-cols-1 lg:grid-cols-2 gap-[30px]"
+                      className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 max-w-[620px] mx-auto xl:mx-0"
                     >
-                      {experience.items.map((item, index) => (
+                      {about.info.map((item, index) => (
                         <motion.li
                           key={index}
                           variants={{
@@ -497,28 +727,22 @@ const Resume = () => {
                               transition: { duration: 0.4, ease: "easeOut" },
                             },
                           }}
-                          className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
+                          className="flex items-start justify-start gap-4"
                         >
-                          <span className="text-accent">{item.duration}</span>
-                          <h3 className="text-xl max-w-[260px] min-h-[60px] text-center lg:text-left">
-                            {item.position}
-                          </h3>
-                          <div className="flex items-center gap-3">
-                            <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
-                            <p className="text-white/60">{item.company}</p>
-                          </div>
+                          <span className="text-white/60">{item.fieldname} </span>
+                          <span className="text-xl text-accent">
+                            {item.fieldValue}
+                          </span>
                         </motion.li>
                       ))}
                     </motion.ul>
-                  </ScrollArea>
-                </div>
-              )}
-            </TabsContent>
+                  </div>
+                )}
+              </TabsContent>
 
-            {/* Education */}
-            <TabsContent value="education" className="w-full">
-              {isClient && (
-                <div className="flex flex-col gap-[30px] pt-0 mt-0">
+              {/* resume download */}
+              <TabsContent value="file" className="w-full">
+                <div className="flex flex-col gap-8 w-full">
                   <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -531,230 +755,7 @@ const Resume = () => {
                         transition: { duration: 0.6, ease: "easeOut" },
                       },
                     }}
-                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
-                  >
-                    <h3 className="text-4xl font-bold">{education.title}</h3>
-                    <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
-                      {education.description}
-                    </p>
-                  </motion.div>
-                  <ScrollArea className="h-[400px] pt-0 mt-0">
-                    <motion.ul
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true, amount: 0.2 }}
-                      variants={{
-                        hidden: {},
-                        visible: {
-                          transition: {
-                            staggerChildren: 0.1, // Stagger child animations
-                          },
-                        },
-                      }}
-                      className="grid grid-cols-1 lg:grid-cols-2 gap-[30px]"
-                    >
-                      {education.items.map((item, index) => (
-                        <motion.li
-                          key={index}
-                          variants={{
-                            hidden: { opacity: 0, scale: 0.8 },
-                            visible: {
-                              opacity: 1,
-                              scale: 1,
-                              transition: { duration: 0.4, ease: "easeOut" },
-                            },
-                          }}
-                          className="bg-[#232329] h-[184px] py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
-                        >
-                          <span className="text-accent">{item.duration}</span>
-                          <h3 className="text-xl max-w-[260px] min-h-[60px] text-center lg:text-left">
-                            {item.degree}
-                          </h3>
-                          <div className="flex items-center gap-3">
-                            <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
-                            <p className="text-white/60"> {item.institution}</p>
-                          </div>
-                        </motion.li>
-                      ))}
-                    </motion.ul>
-                  </ScrollArea>
-                </div>
-              )}
-            </TabsContent>
-
-            {/* skills */}
-            <TabsContent value="skills" className="w-full">
-              {isClient && (
-                <div className="flex flex-col gap-[30px] pt-0 mt-0">
-                  {/* Title and Description */}
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.5 }}
-                    variants={{
-                      hidden: { opacity: 0, y: 30 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.6, ease: "easeOut" },
-                      },
-                    }}
-                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
-                  >
-                    <h3 className="text-4xl font-bold">{skills.title}</h3>
-                    <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
-                      {skills.description}
-                    </p>
-                  </motion.div>
-
-                  {/* Skills Categories */}
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    variants={{
-                      hidden: {},
-                      visible: {
-                        transition: {
-                          staggerChildren: 0.1,
-                        },
-                      },
-                    }}
-                    className="flex flex-col gap-8"
-                  >
-                    {["IT", "Dev", "Data", "Tools"].map((category) => (
-                      <motion.div
-                        key={category}
-                        variants={{
-                          hidden: { opacity: 0, y: 20 },
-                          visible: {
-                            opacity: 1,
-                            y: 0,
-                            transition: { duration: 0.4, ease: "easeOut" },
-                          },
-                        }}
-                        className="bg-[#232329] p-6 rounded-xl"
-                      >
-                        <h4 className="text-xl font-semibold mb-6 text-accent">
-                          {category}
-                        </h4>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
-                          {skills.skillList
-                            .filter((skill) => skill.category === category)
-                            .map((skill, index) => (
-                              <motion.div
-                                key={index}
-                                variants={{
-                                  hidden: { opacity: 0, scale: 0.8 },
-                                  visible: {
-                                    opacity: 1,
-                                    scale: 1,
-                                    transition: {
-                                      duration: 0.4,
-                                      ease: "easeOut",
-                                    },
-                                  },
-                                }}
-                                className="group relative flex flex-col justify-center items-center p-4 h-[100px] bg-[#1c1c21] rounded-xl overflow-hidden"
-                              >
-                                <div
-                                  style={{ background: skill.bgHoverColor }}
-                                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                />
-                                <div className="relative z-10 flex items-center justify-center w-12 h-12">
-                                  {getIcon(skill.iconName)}
-                                </div>
-                                <span className="absolute bottom-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                  {skill.name}
-                                </span>
-                              </motion.div>
-                            ))}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </div>
-              )}
-            </TabsContent>
-
-            {/* About Me */}
-            <TabsContent value="about" className="w-full">
-              {isClient && (
-                <div className="flex flex-col gap-[30px] pt-0 mt-0">
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.5 }}
-                    variants={{
-                      hidden: { opacity: 0, y: 30 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.6, ease: "easeOut" },
-                      },
-                    }}
-                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
-                  >
-                    <h3 className="text-4xl font-bold">{about.title}</h3>
-                    <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
-                      {about.description}
-                    </p>
-                  </motion.div>
-                  <motion.ul
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    variants={{
-                      hidden: {},
-                      visible: {
-                        transition: {
-                          staggerChildren: 0.1,
-                        },
-                      },
-                    }}
-                    className="grid grid-cols-1 xl:grid-cols-2 gap-y-6 max-w-[620px] mx-auto xl:mx-0 pt-0 mt-0"
-                  >
-                    {about.info.map((item, index) => (
-                      <motion.li
-                        key={index}
-                        variants={{
-                          hidden: { opacity: 0, scale: 0.8 },
-                          visible: {
-                            opacity: 1,
-                            scale: 1,
-                            transition: { duration: 0.4, ease: "easeOut" },
-                          },
-                        }}
-                        className="flex items-center justify-center xl:justify-start gap-4"
-                      >
-                        <span className="text-white/60">{item.fieldname} </span>
-                        <span className="text-xl text-accent">
-                          {item.fieldValue}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </motion.ul>
-                </div>
-              )}
-            </TabsContent>
-
-            {/* resume download */}
-            <TabsContent value="file" className="w-full">
-              {isClient && (
-                <div className="flex flex-col gap-[30px]">
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.5 }}
-                    variants={{
-                      hidden: { opacity: 0, y: 30 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.6, ease: "easeOut" },
-                      },
-                    }}
-                    className="flex flex-col gap-[30px] text-center xl:text-left pt-0 mt-0"
+                    className="flex flex-col gap-4 text-center xl:text-left"
                   >
                     <h3 className="text-4xl font-bold">Resume</h3>
                   </motion.div>
@@ -771,16 +772,41 @@ const Resume = () => {
                       </a>
                     </Button>
                   </div>
-                  <div className="w-full h-[70vh] flex justify-center xl:justify-start -translate-x-3">
-                    <iframe
-                      src="https://drive.google.com/file/d/1n4fiA99cs-kgsVu1q70QPPe6-1Zgb36f/preview"
-                      className="w-[90%] xl:w-full h-full border-none"
-                      allow="autoplay"
+                  <div className="flex flex-col gap-4 w-full">
+                    <Image
+                      src="/assets-1/resume/resume-screenshot.png"
+                      alt="Resume"
+                      width={1200}
+                      height={1600}
+                      className="rounded-xl shadow-lg"
                     />
+                    <div className="flex flex-wrap gap-4 mt-4">
+                      <a
+                        href="https://www.linkedin.com/in/abhinavyadav8/"
+                        target="_blank"
+                        className="px-4 py-2 rounded-lg uppercase text-sm text-accent border border-accent hover:bg-accent/10 transition-colors"
+                      >
+                        LinkedIn
+                      </a>
+                      <a
+                        href="https://github.com/abhinavyadav"
+                        target="_blank"
+                        className="px-4 py-2 rounded-lg uppercase text-sm text-accent border border-accent hover:bg-accent/10 transition-colors"
+                      >
+                        GitHub
+                      </a>
+                      <a
+                        href="https://drive.google.com/drive/folders/.../certificates"
+                        target="_blank"
+                        className="px-4 py-2 rounded-lg uppercase text-sm text-accent border border-accent hover:bg-accent/10 transition-colors"
+                      >
+                        Certificates
+                      </a>
+                    </div>
                   </div>
                 </div>
-              )}
-            </TabsContent>
+              </TabsContent>
+            </div>
           </div>
         </Tabs>
       </div>

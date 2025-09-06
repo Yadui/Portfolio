@@ -8,30 +8,30 @@ import { motion } from "framer-motion";
 const services = [
   {
     num: "01",
-    title: "Data Analyst",
+    title: "Cloud Architect",
     description:
-      "Specializing in data analysis and visualization using Python, SQL, and Tableau. I transform complex datasets into actionable insights and build data-driven solutions.",
+      "Designing and implementing scalable cloud architectures for modern applications, ensuring reliability, performance, and security.",
     href: "/",
   },
   {
     num: "02",
+    title: "AI Tool Creator",
+    description:
+      "Developing innovative AI tools and solutions, optimizing models to solve real-world problems effectively.",
+    href: "/",
+  },
+  {
+    num: "03",
     title: "Web Development",
     description:
       "Expert in building modern web applications using React, Next.js, and Node.js. I create responsive, high-performance websites with clean, maintainable code.",
     href: "/",
   },
   {
-    num: "03",
-    title: "UI/UX Design",
-    description:
-      "Crafting intuitive user interfaces and experiences using Figma and Adobe XD. I focus on creating designs that are both beautiful and functional.",
-    href: "/",
-  },
-  {
     num: "04",
-    title: "Prompt Engg & AI Training",
+    title: "AI Training",
     description:
-      "Specializing in crafting effective prompts and training AI models. I optimize language models for specific tasks and create AI solutions that understand and respond to complex queries.",
+      "Specializing in training AI models to perform specific tasks, fine-tuning algorithms, and creating intelligent solutions.",
     href: "/",
   },
 ];
