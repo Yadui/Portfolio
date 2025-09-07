@@ -3,13 +3,7 @@
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, EffectFade } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/effect-fade";
-
-import { BsArrowUpRight, BsGithub } from "react-icons/bs";
+import { BsArrowLeft, BsArrowRight, BsGithub } from "react-icons/bs";
 import { CgMediaLive } from "react-icons/cg";
 import {
   Tooltip,
@@ -20,8 +14,6 @@ import {
 
 import Link from "next/link";
 import Image from "next/image";
-import { Description } from "@radix-ui/react-dialog";
-import WorkSliderBtns from "@/components/WorkSliderBtns";
 
 const project = [
   {
@@ -65,18 +57,26 @@ const project = [
 ];
 
 const Work = () => {
-  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [projects, setProjects] = useState(project[0]);
+  // Track image index per card
+  const [imageIndexes, setImageIndexes] = useState(Array(project.length).fill(0));
 
-  const handleProjectChange = (direction) => {
-    let newIndex;
-    if (direction === "next") {
-      newIndex = (currentProjectIndex + 1) % project.length;
-    } else {
-      newIndex = (currentProjectIndex - 1 + project.length) % project.length;
-    }
-    setCurrentProjectIndex(newIndex);
-    setProjects(project[newIndex]);
+  const handlePrev = (cardIdx) => {
+    setImageIndexes((prev) =>
+      prev.map((idx, i) =>
+        i === cardIdx
+          ? (idx - 1 + project[cardIdx].images.length) % project[cardIdx].images.length
+          : idx
+      )
+    );
+  };
+  const handleNext = (cardIdx) => {
+    setImageIndexes((prev) =>
+      prev.map((idx, i) =>
+        i === cardIdx
+          ? (idx + 1) % project[cardIdx].images.length
+          : idx
+      )
+    );
   };
 
   return (
@@ -89,143 +89,89 @@ const Work = () => {
       className="min-h-[80vh] flex flex-col justify-center py-12 xl:px-0"
     >
       <div className="container mx-auto">
-        <div className="flex flex-col xl:flex-row xl:gap-[30px] items-start">
-          {/* Mobile-only title */}
-          <div className="xl:hidden w-full mb-6 text-center">
-            <h2 className="text-3xl font-bold text-white bg-[#27272c]/50 py-4 rounded-xl">
-              {projects.title}
-            </h2>
-          </div>
-
-          {/* Image Section - First on mobile */}
-          <div className="w-full xl:w-[60%] order-1 xl:order-2">
-            <div className="relative">
-              <Swiper
-                modules={[Autoplay, EffectFade]}
-                spaceBetween={0}
-                slidesPerView={1}
-                effect="fade"
-                autoplay={{
-                  delay: 2000,
-                  disableOnInteraction: false,
-                }}
-                className="h-[400px] sm:h-[500px] xl:h-[650px] gallery-swiper"
-                loop={true}
-              >
-                {project[currentProjectIndex].images.map(
-                  (image, imageIndex) => (
-                    <SwiperSlide
-                      key={`${currentProjectIndex}-${imageIndex}`}
-                      className="w-full"
+        <h2 className="text-4xl font-bold text-white mb-12 text-center">My Projects</h2>
+        <div className="grid gap-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+          {project.map((proj, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.05 }}
+              className="bg-[#27272c] rounded-xl overflow-hidden shadow-lg relative group"
+            >
+              <div className="relative h-56">
+                <Image
+                  src={proj.images[imageIndexes[index]]}
+                  alt={`${proj.title} screenshot ${imageIndexes[index] + 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  quality={100}
+                  priority={index === 0}
+                />
+                {/* Removed hover overlay with GitHub and Live buttons */}
+              </div>
+              {/* Arrows below image, centered */}
+              <div className="flex justify-center items-center gap-4 mt-2">
+                <button
+                  aria-label="Previous image"
+                  type="button"
+                  className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
+                  onClick={() => handlePrev(index)}
+                  tabIndex={0}
+                >
+                  <BsArrowLeft />
+                </button>
+                <span className="text-xs text-white/40 select-none">
+                  {imageIndexes[index] + 1}/{proj.images.length}
+                </span>
+                <button
+                  aria-label="Next image"
+                  type="button"
+                  className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
+                  onClick={() => handleNext(index)}
+                  tabIndex={0}
+                >
+                  <BsArrowRight />
+                </button>
+              </div>
+              <div className="p-4">
+                <h3 className="text-xl font-bold text-white mb-2">{proj.title}</h3>
+                <p className="text-white/70 mb-4">{proj.description}</p>
+                <ul className="flex flex-wrap gap-2">
+                  {proj.stack.map((item, idx) => (
+                    <li
+                      key={idx}
+                      className="text-sm text-accent bg-[#3a3a3a] px-3 py-1 rounded-full"
                     >
-                      <div className="h-full relative group flex justify-center items-center bg-[#27272c] rounded-xl overflow-hidden">
-                        <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-                          <div className="relative w-full aspect-[16/9]">
-                            <Image
-                              src={image}
-                              fill
-                              alt={`${
-                                project[currentProjectIndex].title
-                              } - View ${imageIndex + 1}`}
-                              className="object-contain"
-                              priority={imageIndex === 0}
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 800px"
-                              quality={100}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                  )
-                )}
-              </Swiper>
-              {/* Custom navigation buttons */}
-              <div className="flex gap-2 absolute right-0 bottom-[calc(50%_-_22px)] xl:bottom-0 z-20 w-full justify-between xl:w-max xl:justify-none">
-                <button
-                  onClick={() => handleProjectChange("prev")}
-                  className="bg-accent hover:bg-accent-hover text-primary text-[22px] w-[44px] h-[44px] flex justify-center items-center transition-all rounded-full"
-                >
-                  ←
-                </button>
-                <button
-                  onClick={() => handleProjectChange("next")}
-                  className="bg-accent hover:bg-accent-hover text-primary text-[22px] w-[44px] h-[44px] flex justify-center items-center transition-all rounded-full"
-                >
-                  →
-                </button>
+                      {item.name}
+                    </li>
+                  ))}
+                </ul>
+                {/* Always visible GitHub and Live buttons below the card */}
+                <div className="flex gap-4 mt-4">
+                  <Link href={proj.github} target="_blank" rel="noopener noreferrer">
+                    <button
+                      type="button"
+                      className="w-10 h-10 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
+                      aria-label="GitHub Repository"
+                    >
+                      <BsGithub className="text-xl" />
+                    </button>
+                  </Link>
+                  <Link href={proj.live} target="_blank" rel="noopener noreferrer">
+                    <button
+                      type="button"
+                      className="w-10 h-10 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
+                      aria-label="Live Project"
+                    >
+                      <CgMediaLive className="text-xl" />
+                    </button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          </div>
-
-          {/* Content Section */}
-          <div className="w-full xl:w-[35%] flex flex-col order-2 xl:order-1">
-            {/* Desktop-only content */}
-            <div className="hidden xl:flex flex-col gap-[30px]">
-              <div className="text-8xl leading-none font-extrabold text-transparent text-outline">
-                {projects.num}
-              </div>
-              <h2 className="text-[42px] font-bold leading-none text-white group-hover:text-accent transition-all duration-500 capitalize">
-                {projects.category} project
-              </h2>
-              <p className="text-white/60">{projects.description}</p>
-            </div>
-
-            {/* Mobile and Desktop content */}
-            <div className="flex flex-col gap-6 mt-6 xl:mt-0">
-              {/* Stack */}
-              <ul className="flex flex-wrap justify-center xl:justify-start gap-4">
-                {projects.stack.map((item, index) => (
-                  <li
-                    key={index}
-                    className="text-xl text-accent bg-[#27272c]/50 px-4 py-2 rounded-full"
-                  >
-                    {item.name}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Buttons */}
-              <div className="flex justify-center xl:justify-start items-center gap-4">
-                <Link href={projects.github}>
-                  <TooltipProvider delayDuration={100}>
-                    <Tooltip>
-                      <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group hover:bg-accent/20 transition-all">
-                        <BsGithub className="text-white text-3xl group-hover:text-accent transition-all" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="bg-white text-black">Git repo</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </Link>
-
-                <Link href={projects.live}>
-                  <TooltipProvider delayDuration={100}>
-                    <Tooltip>
-                      <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group hover:bg-accent/20 transition-all">
-                        <CgMediaLive className="text-white text-3xl group-hover:text-accent transition-all" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="bg-white text-black">Live Project</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </Link>
-              </div>
-            </div>
-          </div>
+            </motion.div>
+          ))}
         </div>
       </div>
-      <style jsx global>{`
-        .gallery-swiper .swiper-pagination-bullet {
-          background: white;
-          opacity: 0.5;
-        }
-        .gallery-swiper .swiper-pagination-bullet-active {
-          background: var(--accent);
-          opacity: 1;
-        }
-      `}</style>
     </motion.div>
   );
 };
