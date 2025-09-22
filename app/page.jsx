@@ -53,7 +53,10 @@ const Home = () => {
                   className="uppercase flex items-center gap-2 backdrop-blur-lg bg-white/10 border border-white/20 transition-colors duration-200"
                   asChild
                 >
-                  <a href="./abhinav-cv.pdf" download="Abhinav_Yadav_CV.pdf">
+                  <a
+                    href="https://docs.google.com/document/d/1AdOwjtfyZGP8NImdYoWigDVsk14vhPl4/edit?usp=sharing&ouid=102577994594751216788&rtpof=true&sd=true"
+                    download="Abhinav_Yadav_CV.pdf"
+                  >
                     <span>Download CV</span>
                     <FiDownload className="text-xl" />
                   </a>
