@@ -1,178 +1,174 @@
 "use client";
 
-import { motion } from "framer-motion";
-import React, { useState } from "react";
-
-import { BsArrowLeft, BsArrowRight, BsGithub } from "react-icons/bs";
-import { CgMediaLive } from "react-icons/cg";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
-
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { BsGithub, BsArrowUpRight } from "react-icons/bs";
 import Link from "next/link";
 import Image from "next/image";
 
-const project = [
+const projects = [
   {
-    num: "01",
-    category: "Gen AI tools",
+    id: 1,
     title: "VirtuAI",
-    description: "A virtual gen ai tools for all your needs",
-    stack: [
-      { name: "NextJS" },
-      { name: "Typescript" },
-      { name: "Tailwind" },
-      { name: "Clerk" },
-    ],
-    images: [
-      "/assets-1/work/virtuai/landing.png",
-      "/assets-1/work/virtuai/dashboard.png",
-      "/assets-1/work/virtuai/workflow.png",
-    ],
-    live: "https://virtuai.vercel.app/",
-    github: "https://github.com/Yadui/ProdigyAI",
+    category: "AI",
+    description: "A comprehensive suite of Generative AI tools wrapped in a modern web interface.",
+    stack: ["Next.js", "TypeScript", "Clerk"],
+    image: "/assets/work/virtuai/landing.png",
+    links: {
+      github: "https://github.com/Yadui/ProdigyAI",
+      live: "https://virtuai.vercel.app/",
+    },
   },
   {
-    num: "02",
-    category: "Create work flows",
+    id: 2,
     title: "Automify",
-    description: "Create workflows and automate your work",
-    stack: [
-      { name: "Next JS" },
-      { name: "Typescript" },
-      { name: "TailwindCss" },
-      { name: "Neontech" },
-    ],
-    images: [
-      "/assets-1/work/automify/landing.png",
-      "/assets-1/work/automify/dashboard.png",
-      "/assets-1/work/automify/workflow.png",
-    ],
-    live: "https://automify.vercel.app/",
-    github: "https://github.com/Yadui/automify",
+    category: "Web",
+    description: "Workflow automation platform designed to streamline business processes.",
+    stack: ["Next.js", "NeonDB", "Tailwind"],
+    image: "/assets/work/automify/landing.png",
+    links: {
+      github: "https://github.com/Yadui/automify",
+      live: "https://automify.vercel.app/",
+    },
+  },
+  {
+    id: 3,
+    title: "Enterprise Migration",
+    category: "Cloud",
+    description: "Migrated a legacy monolithic application to a microservices architecture on AWS, reducing downtime by 99%.",
+    stack: ["AWS", "Docker", "Kubernetes"],
+    image: null,
+    links: { github: "", live: "" },
+  },
+  {
+    id: 4,
+    title: "Serverless Pipeline",
+    category: "Cloud",
+    description: "Built a real-time data processing pipeline using Azure Functions and Event Hubs for a fintech client.",
+    stack: ["Azure", "Serverless", "Python"],
+    image: null,
+    links: { github: "", live: "" },
+  },
+  {
+    id: 5,
+    title: "AI Model Training",
+    category: "AI",
+    description: "Extensive work on training and fine-tuning LLMs (RLHF & SFT) to improve reasoning and coding capabilities.",
+    stack: ["RLHF", "Python", "PyTorch"],
+    image: null,
+    links: { github: "", live: "" },
   },
 ];
 
 const Work = () => {
-  // Track image index per card
-  const [imageIndexes, setImageIndexes] = useState(Array(project.length).fill(0));
+  const [filter, setFilter] = useState("all");
 
-  const handlePrev = (cardIdx) => {
-    setImageIndexes((prev) =>
-      prev.map((idx, i) =>
-        i === cardIdx
-          ? (idx - 1 + project[cardIdx].images.length) % project[cardIdx].images.length
-          : idx
-      )
-    );
-  };
-  const handleNext = (cardIdx) => {
-    setImageIndexes((prev) =>
-      prev.map((idx, i) =>
-        i === cardIdx
-          ? (idx + 1) % project[cardIdx].images.length
-          : idx
-      )
-    );
-  };
+  const filteredProjects = projects.filter((project) => 
+    filter === "all" ? true : project.category.toLowerCase() === filter
+  );
+
+  const tabs = ["all", "cloud", "web", "ai"];
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{
-        opacity: 1,
-        transition: { delay: 2.4, duration: 0.4, ease: "easeIn" },
-      }}
-      className="min-h-[80vh] flex flex-col justify-center py-12 xl:px-0"
-    >
-      <div className="container mx-auto">
-        <h2 className="text-4xl font-bold text-white mb-12 text-center">My Projects</h2>
-        <div className="grid gap-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-          {project.map((proj, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              className="bg-[#27272c] rounded-xl overflow-hidden shadow-lg relative group"
-            >
-              <div className="relative h-56">
-                <Image
-                  src={proj.images[imageIndexes[index]]}
-                  alt={`${proj.title} screenshot ${imageIndexes[index] + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  quality={100}
-                  priority={index === 0}
-                />
-                {/* Removed hover overlay with GitHub and Live buttons */}
-              </div>
-              {/* Arrows below image, centered */}
-              <div className="flex justify-center items-center gap-4 mt-2">
-                <button
-                  aria-label="Previous image"
-                  type="button"
-                  className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
-                  onClick={() => handlePrev(index)}
-                  tabIndex={0}
-                >
-                  <BsArrowLeft />
-                </button>
-                <span className="text-xs text-white/40 select-none">
-                  {imageIndexes[index] + 1}/{proj.images.length}
-                </span>
-                <button
-                  aria-label="Next image"
-                  type="button"
-                  className="w-8 h-8 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
-                  onClick={() => handleNext(index)}
-                  tabIndex={0}
-                >
-                  <BsArrowRight />
-                </button>
-              </div>
-              <div className="p-4">
-                <h3 className="text-xl font-bold text-white mb-2">{proj.title}</h3>
-                <p className="text-white/70 mb-4">{proj.description}</p>
-                <ul className="flex flex-wrap gap-2">
-                  {proj.stack.map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="text-sm text-accent bg-[#3a3a3a] px-3 py-1 rounded-full"
-                    >
-                      {item.name}
-                    </li>
-                  ))}
-                </ul>
-                {/* Always visible GitHub and Live buttons below the card */}
-                <div className="flex gap-4 mt-4">
-                  <Link href={proj.github} target="_blank" rel="noopener noreferrer">
+    <section className="min-h-screen py-24 bg-primary/50">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col items-center mb-16 space-y-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-white">My Projects</h2>
+            
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap justify-center gap-4">
+                {tabs.map((tab) => (
                     <button
-                      type="button"
-                      className="w-10 h-10 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
-                      aria-label="GitHub Repository"
+                        key={tab}
+                        onClick={() => setFilter(tab)}
+                        className={`px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 border ${
+                            filter === tab 
+                            ? "bg-accent text-primary border-accent shadow-[0_0_20px_rgba(0,255,153,0.4)]" 
+                            : "bg-[#27272c] text-white/60 border-white/10 hover:border-accent hover:text-white"
+                        }`}
                     >
-                      <BsGithub className="text-xl" />
+                        {tab}
                     </button>
-                  </Link>
-                  <Link href={proj.live} target="_blank" rel="noopener noreferrer">
-                    <button
-                      type="button"
-                      className="w-10 h-10 flex items-center justify-center border border-white/20 rounded-full text-white/70 hover:text-accent hover:border-accent transition"
-                      aria-label="Live Project"
-                    >
-                      <CgMediaLive className="text-xl" />
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                ))}
+            </div>
         </div>
+
+        <motion.div 
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+            <AnimatePresence>
+                {filteredProjects.map((project) => (
+                    <motion.div
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.3 }}
+                        key={project.id}
+                        className="bg-[#27272c] rounded-2xl overflow-hidden border border-white/5 hover:border-accent/50 transition-all duration-300 group flex flex-col"
+                    >
+                        {/* Image / Visual */}
+                        <div className="relative h-[240px] w-full bg-black/50 overflow-hidden">
+                            {project.image ? (
+                                <Image 
+                                    src={project.image} 
+                                    alt={project.title} 
+                                    fill 
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/5 to-transparent">
+                                    <h3 className="text-4xl font-bold text-white/10 group-hover:text-accent/20 transition-colors">
+                                        {project.category}
+                                    </h3>
+                                </div>
+                            )}
+                            
+                            {/* Overlay Links */}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                                {project.links.github && (
+                                    <Link href={project.links.github} target="_blank" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-accent hover:text-primary transition-colors">
+                                        <BsGithub className="text-2xl" />
+                                    </Link>
+                                )}
+                                {project.links.live && (
+                                    <Link href={project.links.live} target="_blank" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:bg-accent hover:text-primary transition-colors">
+                                        <BsArrowUpRight className="text-2xl" />
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 flex flex-col flex-1">
+                            <div className="flex justify-between items-start mb-4">
+                                <h3 className="text-2xl font-bold text-white group-hover:text-accent transition-colors">
+                                    {project.title}
+                                </h3>
+                                <span className="text-xs font-bold px-2 py-1 rounded bg-white/5 text-white/60 uppercase">
+                                    {project.category}
+                                </span>
+                            </div>
+                            
+                            <p className="text-white/60 mb-6 flex-1">
+                                {project.description}
+                            </p>
+
+                            <div className="flex flex-wrap gap-2 mt-auto">
+                                {project.stack.map((tech, index) => (
+                                    <span key={index} className="text-xs font-bold text-accent bg-accent/10 px-3 py-1 rounded-full">
+                                        {tech}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </AnimatePresence>
+        </motion.div>
       </div>
-    </motion.div>
+    </section>
   );
 };
 

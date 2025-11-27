@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply font-primary bg-primary text-white leading-loose;
   }
@@ -21,10 +24,76 @@
   .text-outline-hover {
     -webkit-text-stroke: 1px #00ff99;
   }
+  .theme {
+    --animate-orbit: orbit calc(var(--duration)*1s) linear infinite;
+  }
 }
 
 @layer utilities {
   .slow-spin {
     animation: spin 4s linear infinite; /* Adjust 4s to your desired duration */
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes float-medium {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+  }
+  @keyframes float-fast {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+  .animate-float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+  }
+  .animate-float-medium {
+    animation: float-medium 4s ease-in-out infinite;
+  }
+  .animate-float-fast {
+    animation: float-fast 3s ease-in-out infinite;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  /* body {
+    @apply bg-background text-foreground;
+  } */
+}
+
+@theme inline {
+  @keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
+    }
+  100% {
+    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px)) rotate(calc((var(--angle) * -1deg) - 360deg));
+    }
+  }
+}
+
+.animate-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  transform:
+    rotate(var(--angle)) 
+    translateX(var(--radius)) 
+    rotate(calc(-1 * var(--angle)));
+  animation: orbit var(--duration) linear infinite;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(-1 * var(--angle)));
+  }
+  100% {
+    transform: rotate(calc(var(--angle) + 360deg)) translateX(var(--radius)) rotate(calc(-1 * (var(--angle) + 360deg)));
   }
 }

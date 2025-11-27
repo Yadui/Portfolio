@@ -216,7 +216,7 @@ const Contact = () => {
           <div className="flex-1 flex items-center xl:justify-end xl:order-1 mb-8 xl:mb-0 xl:text-left">
             <ul className="flex flex-row xl:flex-col gap-10 flex-wrap justify-center w-full bg-[#27272c] p-8 rounded-xl">
               {/* <Image
-                src="/assets-1/Abhinav_Yadav.png"
+                src="/assets/Abhinav_Yadav.png"
                 width={200}
                 height={200}
                 alt="contact qr"

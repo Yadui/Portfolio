@@ -5,7 +5,7 @@ import { TbBrandLeetcode } from "react-icons/tb";
 
 const socials = [
   { icon: <FaGithub />, path: "https://github.com/Yadui" },
-  { icon: <FaLinkedin />, path: "www.linkedin.com/in/abhinav-yadav-a49408232" },
+  { icon: <FaLinkedin />, path: "https://www.linkedin.com/in/abhinav-yadav-a49408232" },
   { icon: <FaKaggle />, path: "https://www.kaggle.com/abhinavyadav8" },
   { icon: <TbBrandLeetcode />, path: "https://leetcode.com/u/abhinavyadav8/" },
 ];

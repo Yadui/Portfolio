@@ -53,8 +53,8 @@ const Photo = () => {
           className="w-[298px] h-[298px] xl:w-[498px] xl:h-[498px] relative mix-blend-lighten"
         >
           <Image
-            src="/assets-1/abhinav.jpeg"
-            // src="/assets-1/photo.png"
+            src="/assets/abhinav.jpeg"
+            // src="/assets/photo.png"
             priority
             quality={100}
             fill
