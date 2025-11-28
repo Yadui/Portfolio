@@ -1,19 +1,9 @@
-import Link from "next/link";
-import Nav from "./Nav";
-import MobileNav from "./MobileNav";
+
 
 const Header = () => {
   return (
-    <header className="py-2 text-white bg-pink-50/20">
-      <div className="container mx-auto flex justify-center">
-        <div className="hidden xl:flex items-center gap-8">
-          <Nav className="" />
-        </div>
-
-        <div className="xl:hidden">
-          <MobileNav />
-        </div>
-      </div>
+    <header className="fixed w-full top-0 z-50 text-primary bg-white">
+      <div className="w-full h-[2px] bg-black"></div>
     </header>
   );
 };

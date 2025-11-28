@@ -168,7 +168,7 @@ const Services = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 
   return (
-    <section id="services" className="min-h-screen py-24 bg-primary/50 relative">
+    <section id="services" className="min-h-screen py-24 bg-white relative">
       <div className="container mx-auto px-4">
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -176,12 +176,9 @@ const Services = () => {
             viewport={{ once: true }}
             className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-primary">
               What I Do
           </h2>
-          <p className="text-white/60 max-w-2xl mx-auto text-xl">
-            A showcase of my technical projects and professional work.
-          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -192,11 +189,11 @@ const Services = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="group bg-[#18181b] border border-white/10 rounded-2xl overflow-hidden hover:border-accent/50 transition-all duration-300 flex flex-col cursor-pointer"
+                    className="group bg-zinc-50 border border-primary/10 rounded-2xl overflow-hidden hover:border-accent hover:shadow-lg transition-all duration-300 flex flex-col cursor-pointer"
                     onClick={() => setSelectedProject(project)}
                 >
                     {/* Card Header / Image Placeholder */}
-                    <div className="h-48 bg-white/5 relative overflow-hidden">
+                    <div className="h-48 bg-gray-200 relative overflow-hidden">
                         {project.image ? (
                             <Image 
                                 src={project.image} 
@@ -205,16 +202,16 @@ const Services = () => {
                                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/5 to-transparent">
-                                <span className="text-4xl font-bold text-white/10 group-hover:text-accent/20 transition-colors">
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-transparent">
+                                <span className="text-4xl font-bold text-primary/10 group-hover:text-accent transition-colors">
                                     {project.category}
                                 </span>
                             </div>
                         )}
                         
                         {/* Overlay Icon */}
-                        <div className="absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <BsArrowUpRight className="text-white" />
+                        <div className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm">
+                            <BsArrowUpRight className="text-primary" />
                         </div>
                     </div>
 
@@ -226,15 +223,15 @@ const Services = () => {
                             </span>
                         </div>
                         
-                        <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-accent transition-colors">
+                        <h3 className="text-2xl font-bold text-primary mb-3 group-hover:text-accent transition-colors">
                             {project.title}
                         </h3>
                         
-                        <p className="text-white/60 mb-6 line-clamp-3">
+                        <p className="text-primary/60 mb-6 line-clamp-3">
                             {project.summary}
                         </p>
 
-                        <div className="mt-auto flex items-center gap-2 text-white/40 text-sm font-medium group-hover:text-white transition-colors">
+                        <div className="mt-auto flex items-center gap-2 text-primary/40 text-sm font-medium group-hover:text-primary transition-colors">
                             <span>View Details</span>
                             <BsArrowUpRight className="text-accent" />
                         </div>

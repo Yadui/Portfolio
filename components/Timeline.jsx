@@ -6,11 +6,11 @@ import { FiBriefcase, FiAward, FiCalendar } from "react-icons/fi";
 
 const experience = [
   {
-    company: "Foetron Consulting",
-    position: "Data and AI Engineer",
+    company: "Foetron Consultancy Services ",
+    position: "Cloud and AI Architect",
     duration: "Present",
     type: "Internship",
-    description: "Leading AI integration projects and data engineering pipelines.",
+    description: "Leading AI integration projects and cloud architecture.",
   },
   {
     company: "Outlier AI",
@@ -130,9 +130,6 @@ const Timeline = () => {
             className="text-center mb-20"
         >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">My Journey</h2>
-            <p className="text-white/60 max-w-2xl mx-auto text-lg">
-                Professional experience and educational milestones.
-            </p>
         </motion.div>
 
         <div ref={containerRef} className="relative">

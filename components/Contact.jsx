@@ -100,7 +100,7 @@ const Contact = () => {
     <section
       id="contact"
       ref={containerRef}
-      className="py-24 relative bg-black/20"
+      className="py-24 relative bg-black/70"
     >
        <div className="container mx-auto">
          <div className="contact-content opacity-0 translate-y-12 flex flex-col xl:flex-row gap-16">
