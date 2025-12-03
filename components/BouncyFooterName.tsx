@@ -138,8 +138,9 @@ export default function BouncyFooterName() {
     /** --------------------------
      * SCALED CONSTANTS
      * ------------------------- */
-    const BODY_WIDTH = BASE_BODY_WIDTH * scale;
-    const BODY_HEIGHT = BASE_BODY_HEIGHT * scale;
+    // Increased body width to match visual better for dragging
+    const BODY_WIDTH = (BASE_LETTER_WIDTH * 0.6) * scale; 
+    const BODY_HEIGHT = (BASE_LETTER_HEIGHT * 0.8) * scale;
     
     const SPAWN_Y = dimensions.height > 600 ? dimensions.height - 600 : -200;
 
@@ -147,7 +148,7 @@ export default function BouncyFooterName() {
      * SETUP
      * ------------------------- */
     const engine = Engine.create({
-      gravity: { x: 0, y: 2 }
+      gravity: { x: 0, y: 1.5 } // Slightly reduced gravity for floatier feel
     });
 
     const render = Render.create({
@@ -165,7 +166,7 @@ export default function BouncyFooterName() {
     /** --------------------------
      * WALLS (Responsive)
      * ------------------------- */
-    const boundaryOptions = { isStatic: true, render: { visible: false } };
+    const boundaryOptions = { isStatic: true, render: { visible: false }, friction: 0.5, restitution: 0.2 };
     const wallThickness = 100;
 
     const ground = Bodies.rectangle(
@@ -198,27 +199,30 @@ export default function BouncyFooterName() {
      * LETTERS
      * ------------------------- */
     const text = "ABHINAV".split("");
-    const totalBodyWidth = text.length * BODY_WIDTH;
+    // Calculate total width based on the visual spacing we want
+    const totalBodyWidth = text.length * (BODY_WIDTH * 1.1); 
     const startX = (dimensions.width - totalBodyWidth) / 2 + BODY_WIDTH / 2;
 
     const bodies: Body[] = text.map((_, i) => {
       const b = Bodies.rectangle(
-        startX + i * BODY_WIDTH * SPACING,
-        SPAWN_Y,
+        startX + i * (BODY_WIDTH * 1.1),
+        SPAWN_Y - Math.random() * 200, // Randomize spawn height slightly
         BODY_WIDTH,
         BODY_HEIGHT,
         {
-          restitution: 0.5,
-          friction: 0.8, // Increased friction to help them stand
-          frictionAir: 0.02,
-          // Changed from BODY_WIDTH/2 (Capsule) to fixed small radius (Rounded Rectangle).
-          // This gives them a flat bottom so they can stand upright.
-          chamfer: { radius: 30 * scale }, 
+          restitution: 0.4, // Bounciness
+          friction: 0.5,
+          frictionAir: 0.01,
+          density: 0.002, // Heavier feel
+          // Reduced chamfer to prevent rolling like a ball, but kept enough for smooth corners
+          chamfer: { radius: 20 * scale }, 
           render: { visible: false }
         }
       ) as Body;
 
-      Matter.Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.2);
+      // Randomize initial state so they don't all fall flat
+      Matter.Body.setAngle(b, (Math.random() - 0.5) * 0.5); 
+      Matter.Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.05);
       return b;
     });
 
@@ -236,7 +240,11 @@ export default function BouncyFooterName() {
 
     const mouseConstraint = MouseConstraint.create(engine, {
       mouse,
-      constraint: { stiffness: 0.2, render: { visible: false } }
+      constraint: { 
+        stiffness: 0.1, // Softer constraint for smoother drag
+        damping: 0.1,
+        render: { visible: false } 
+      }
     });
 
     Composite.add(engine.world, mouseConstraint);
@@ -264,11 +272,12 @@ export default function BouncyFooterName() {
         const visualWidth = BASE_LETTER_WIDTH * scale;
         const visualHeight = BASE_LETTER_HEIGHT * scale;
 
+        // Correct centering: subtract half of the VISUAL width/height
         el.style.transform = `
-  translate(${x - (visualWidth * SPACING) / 2}px,
-            ${y - visualHeight / 2}px)
-  rotate(${angle}rad)
-`;
+          translate(${x - visualWidth / 2}px,
+                    ${y - visualHeight / 2}px)
+          rotate(${angle}rad)
+        `;
         
         if (y > dimensions.height + 100 || y < -1000) {
            Matter.Body.setPosition(body, {
@@ -276,6 +285,7 @@ export default function BouncyFooterName() {
              y: -200
            });
            Matter.Body.setVelocity(body, { x: 0, y: 0 });
+           Matter.Body.setAngle(body, 0);
         }
       });
       animationFrameId = requestAnimationFrame(sync);
