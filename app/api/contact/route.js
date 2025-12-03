@@ -1,10 +1,11 @@
 import nodemailer from "nodemailer";
 
 export async function POST(req) {
-  const { firstname, lastname, email, phone, service, message, to } =
+  const { firstname, lastname, email, phone, service, message } =
     await req.json();
 
-  if (!firstname || !lastname || !message || (!email && !phone)) {
+  // Relaxed validation: only require firstname (used as Name), message, and contact info
+  if (!firstname || !message || (!email && !phone)) {
     return new Response(JSON.stringify({ error: "Missing required fields" }), {
       status: 400,
     });
@@ -24,12 +25,12 @@ export async function POST(req) {
       from: `"Portfolio Contact" <abhinavyadav8+port@gmail.com>`,
       replyTo: email || undefined,
       to: "abhinavyadav8+port@gmail.com",
-      subject: `New Contact Form: ${service}`,
+      subject: `New Contact Form${service ? `: ${service}` : ""}`,
       html: `
-    <p>Name: ${firstname} ${lastname}</p>
+    <p>Name: ${firstname} ${lastname || ""}</p>
     <p>Email: ${email}</p>
-    <p>Phone: ${phone}</p>
-    <p>Service: ${service}</p>
+    ${phone ? `<p>Phone: ${phone}</p>` : ""}
+    ${service ? `<p>Service: ${service}</p>` : ""}
     <p>Message: ${message}</p>
   `,
     });

@@ -8,6 +8,7 @@ import { FaEnvelope, FaMapMarkedAlt, FaLinkedin } from "react-icons/fa";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import BouncyFooterName from "./BouncyFooterName";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -97,12 +98,13 @@ const Contact = () => {
   };
 
   return (
+
     <section
       id="contact"
       ref={containerRef}
-      className="py-24 relative bg-black/70"
+      className="pt-24 relative bg-black/70"
     >
-       <div className="container mx-auto">
+       <div className="container mx-auto px-6">
          <div className="contact-content opacity-0 translate-y-12 flex flex-col xl:flex-row gap-16">
            
            {/* Info Section */}
@@ -139,23 +141,22 @@ const Contact = () => {
            {/* Form Section */}
            <div className="flex-1 order-1 xl:order-2">
              <form
-               className="flex flex-col gap-6 p-8 md:p-12 bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-[32px] shadow-2xl"
+               className="flex flex-col gap-6 p-6 md:p-12 bg-zinc-900/50 backdrop-blur-xl border border-white/10 rounded-[32px] shadow-2xl"
                onSubmit={handleSubmit}
              >
                <h3 className="text-2xl font-bold text-accent mb-2">Send a Message</h3>
                
-               <div className="flex flex-col gap-6">
-                 <div className="space-y-2">
+               <div className="flex flex-col md:flex-row gap-6">
+                 <div className="flex-1 space-y-2">
                     <label className="text-sm font-medium text-white/60 ml-2">Name</label>
                     <Input name="name" type="text" placeholder="John Doe" className="bg-black/50 border-white/10 focus:border-accent rounded-xl h-14 text-white placeholder:text-white/20" required />
                  </div>
-                 
-                 <div className="space-y-2">
+                 <div className="flex-1 space-y-2">
                     <label className="text-sm font-medium text-white/60 ml-2">Email</label>
                     <Input name="email" type="email" placeholder="john@example.com" className="bg-black/50 border-white/10 focus:border-accent rounded-xl h-14 text-white placeholder:text-white/20" required />
                  </div>
-
-                 <div className="space-y-2">
+                </div> 
+                <div className="space-y-2">
                     <label className="text-sm font-medium text-white/60 ml-2">Message</label>
                     <Textarea
                         name="message"
@@ -164,7 +165,7 @@ const Contact = () => {
                         required
                     />
                  </div>
-               </div>
+              
 
                <Button size="lg" className="w-full bg-accent text-primary hover:bg-accent/90 transition-all rounded-xl font-bold text-lg h-14 mt-4" disabled={loading}>
                  {loading ? (
@@ -186,6 +187,7 @@ const Contact = () => {
 
          </div>
        </div>
+       <BouncyFooterName />
     </section>
   );
 };

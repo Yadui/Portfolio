@@ -25,6 +25,8 @@ module.exports = {
     },
     fontFamily: {
       primary: "var(--font-jetbrainsMono)",
+      electro: ["Electroharmonix", "sans-serif"],
+      qubiko: ["Qubiko", "sans-serif"],
     },
     extend: {
       colors: {

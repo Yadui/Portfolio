@@ -204,7 +204,7 @@ const SkillConnection = ({
         <motion.line
           x1={x1} y1={y1} x2={x2} y2={y2}
           stroke={isRelated ? "#00ff99" : "#4ade80"} // Bright Green if related, Green pulse otherwise
-          strokeWidth={isRelated ? 3 : 2}
+          strokeWidth={isRelated ? 3 : 5}
           strokeLinecap="round"
           // Dash array: [Length of pulse, Length of gap]
           // Gap is huge (1000) to ensure only one pulse is visible at a time
@@ -216,7 +216,7 @@ const SkillConnection = ({
           transition={{
             duration: timing.duration,
             repeat: Infinity,
-            repeatDelay: Math.random() * 2, // Add random pause between pulses
+            repeatDelay: Math.random() * 5, // Add random pause between pulses
             delay: timing.delay,
             ease: "linear",
           }}
@@ -327,7 +327,7 @@ export default function Skills() {
   style={{ transform: "translateZ(0)" }}
 >
         {/* Background Decorative SVG */}
-        <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" project-id="9dd035939f82413b8dd7f743180e4a30" export-id="bc5e64b270314740b7ac8b8a4ec32bcc"
+        <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shapeRendering="geometricPrecision" textRendering="geometricPrecision" project-id="9dd035939f82413b8dd7f743180e4a30" export-id="bc5e64b270314740b7ac8b8a4ec32bcc"
         className="absolute w-[1350px] h-[1350px] max-w-none opacity-20"
         style={{
         transform: 'translate(-50%, -45%)',

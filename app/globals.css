@@ -60,9 +60,6 @@
   * {
     @apply border-border;
   }
-  /* body {
-    @apply bg-background text-foreground;
-  } */
 }
 
 @theme inline {
@@ -96,4 +93,18 @@
   100% {
     transform: rotate(calc(var(--angle) + 360deg)) translateX(var(--radius)) rotate(calc(-1 * (var(--angle) + 360deg)));
   }
+}
+
+@font-face {
+  font-family: "Electroharmonix";
+  src: url("/fonts/Electroharmonix.woff2") format("woff2"),
+       url("/fonts/Electroharmonix.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Qubiko";
+  src: url("/fonts/Qubiko.woff2") format("woff2"),
+       url("/fonts/Qubiko.woff") format("woff");
+  font-display: swap;
 }
