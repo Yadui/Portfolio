@@ -3,7 +3,9 @@ import { posts } from "@/lib/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { verifyAuth } from "@/lib/auth";
 import DeleteButton from "@/components/DeleteButton";
+import LogoutButton from "@/components/LogoutButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -14,14 +16,15 @@ export default async function BlogList() {
   } catch (error) {
     console.error("Failed to fetch posts:", error);
   }
-  
-  // No Clerk user check - simplified portfolio mode (always admin)
-  const isAdmin = true;
+
+  const user = await verifyAuth();
+  const isAdmin = !!user;
 
   return (
     <div className="min-h-screen bg-primary pt-32 px-4 md:px-12">
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-12">
+          {/* ... Home Link and Title */}
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="outline" className="text-white border-white/20 hover:bg-white/10 hover:text-white gap-2">
@@ -30,13 +33,21 @@ export default async function BlogList() {
             </Link>
             <h1 className="text-4xl font-bold text-white">Blog</h1>
           </div>
-          {isAdmin && (
-            <div className="flex gap-4 items-center">
-              <Link href="/blog/create">
-                <Button className="bg-accent text-primary  transition-all">Create Post</Button>
-              </Link>
-            </div>
-          )}
+          
+          <div className="flex gap-4 items-center">
+            {isAdmin ? (
+              <>
+                <Link href="/blog/create">
+                  <Button className="bg-accent text-primary transition-all">Create Post</Button>
+                </Link>
+                <LogoutButton />
+              </>
+            ) : (
+                <Link href="/login">
+                  <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">Login</Button>
+                </Link>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
