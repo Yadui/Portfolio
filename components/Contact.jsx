@@ -23,7 +23,7 @@ const info = [
   {
     icon: <FaEnvelope />,
     title: "Email",
-    description: "abhinavyadav8+port@gmail.com",
+    description: "Gmail",
     link: "mailto:abhinavyadav8+port@gmail.com",
     isExternal: false,
   },

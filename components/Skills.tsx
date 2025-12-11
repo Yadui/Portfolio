@@ -327,8 +327,8 @@ export default function Skills() {
       <div className="overflow-hidden w-full">
         <div
           ref={containerRef}
-          className="relative mx-auto w-full h-[600px] md:h-[1000px] flex items-center justify-center overflow-visible -mt-10 md:-mt-20"
-          style={{ transform: "translateZ(0)" }}
+          className="relative mx-auto w-full h-[500px] md:h-[800px] scale-90 flex items-center justify-center overflow-visible -mt-10 md:-mt-20"
+          style={{ transform: "translateZ(0) scale(0.9)" }}
         >
           {/* Background Decorative SVG */}
           <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shapeRendering="geometricPrecision" textRendering="geometricPrecision" project-id="9dd035939f82413b8dd7f743180e4a30" export-id="bc5e64b270314740b7ac8b8a4ec32bcc"

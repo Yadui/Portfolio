@@ -92,7 +92,8 @@ const Header = ({ initialAnimEnabled = true }) => {
   return (
     <div ref={containerRef} className="h-full">
       {/* Animation Toggle */}
-      {mounted && (
+      {/* Animation Toggle - REMOVED */}
+      {/* {mounted && (
         <button 
             onClick={toggleAnim} 
             className="fixed top-6 right-6 z-[60] text-white/50 hover:text-white flex items-center gap-2 text-xs font-bold uppercase tracking-widest transition-colors"
@@ -100,7 +101,7 @@ const Header = ({ initialAnimEnabled = true }) => {
             <span>Intro</span>
             {animEnabled ? <FiToggleRight size={24} className="text-accent" /> : <FiToggleLeft size={24} />}
         </button>
-      )}
+      )} */}
 
       {/* INTRO LAYERS */}
       {/* If animEnabled is false, we hide these immediately with CSS to prevent flash */}

@@ -167,8 +167,11 @@ export default async function BlogPost({ params }) {
     notFound();
   }
 
-  const user = await currentUser();
-  const isAdmin = !!user;
+  // const user = await currentUser();
+  // const isAdmin = !!user;
+
+  // Simplified: user is always considered admin for now
+  const isAdmin = true;
 
   // Extract headings for TOC
   const headings = [];
