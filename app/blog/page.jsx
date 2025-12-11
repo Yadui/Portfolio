@@ -3,8 +3,6 @@ import { posts } from "@/lib/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { currentUser } from "@clerk/nextjs/server";
-import { SignInButton, UserButton } from "@clerk/nextjs";
 import DeleteButton from "@/components/DeleteButton";
 
 export const dynamic = 'force-dynamic';
@@ -17,8 +15,8 @@ export default async function BlogList() {
     console.error("Failed to fetch posts:", error);
   }
   
-  const user = await currentUser();
-  const isAdmin = !!user; // For now, any logged in user is admin. Ideally check user.id
+  // No Clerk user check - simplified portfolio mode (always admin)
+  const isAdmin = true;
 
   return (
     <div className="min-h-screen bg-primary pt-32 px-4 md:px-12">
@@ -32,17 +30,12 @@ export default async function BlogList() {
             </Link>
             <h1 className="text-4xl font-bold text-white">Blog</h1>
           </div>
-          {isAdmin ? (
+          {isAdmin && (
             <div className="flex gap-4 items-center">
               <Link href="/blog/create">
                 <Button className="bg-accent text-primary  transition-all">Create Post</Button>
               </Link>
-              <UserButton afterSignOutUrl="/blog" />
             </div>
-          ) : (
-            <SignInButton mode="modal" forceRedirectUrl="/blog">
-              <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">Sign In</Button>
-            </SignInButton>
           )}
         </div>
 

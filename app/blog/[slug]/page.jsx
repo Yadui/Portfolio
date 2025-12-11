@@ -6,7 +6,6 @@ import ReactMarkdown from "react-markdown";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { currentUser } from "@clerk/nextjs/server";
 import { FiHeart, FiBookmark, FiShare2, FiGithub, FiTwitter, FiLinkedin, FiLink, FiInfo, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
 import Image from "next/image";
 import { slugify } from "@/lib/utils"; // We might need to implement this or import it if enabled

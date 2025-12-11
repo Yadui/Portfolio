@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import path from "path";
-import { verifySession } from "@/lib/auth";
-import { cookies } from "next/headers";
 
 export async function POST(req) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session")?.value;
-  const session = token ? await verifySession(token) : null;
-
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  // Removed Clerk auth check
+  // const { userId } = await auth();
+  // if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const formData = await req.formData();
   const file = formData.get("file");
