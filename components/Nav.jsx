@@ -10,7 +10,7 @@ const links = [
   },
   {
     name: "work",
-    path: "/#services",
+    path: "/#projects",
   },
 ];
 const Nav = () => {

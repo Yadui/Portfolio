@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FiBriefcase, FiAward, FiCalendar } from "react-icons/fi";
+import { FiBriefcase, FiAward, FiCalendar, FiPlus, FiArrowDownRight } from "react-icons/fi";
 
 const experience = [
   {
@@ -217,6 +217,16 @@ const TimelineItem = ({ item, index, icon, containerRef, scrollYProgress }) => {
             <h4 className="text-white/90 font-semibold text-lg">
                 {item.company || item.institution}
             </h4>
+
+            {/* Expand Hint Icon */}
+            <div className="absolute bottom-6 right-6 text-white/20 group-hover:text-accent transition-colors duration-300">
+                <motion.div
+                    animate={{ rotate: isHovered ? -45 : 0 }} // Rotate -45 to counteract the icon's natural direction if needed, or rotate nicely
+                    transition={{ duration: 0.3 }}
+                >
+                    <FiArrowDownRight size={24} />
+                </motion.div>
+            </div>
             
             {/* Expandable Content */}
             <motion.div
@@ -268,7 +278,7 @@ const Timeline = () => {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section id="timeline" className="py-24 bg-black relative overflow-hidden">
+    <section id="timeline" className="py-24 bg-black relative z-20">
       <div className="container mx-auto px-4 max-w-6xl">
         
         {/* Section Header */}
@@ -276,7 +286,7 @@ const Timeline = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="sticky top-0 z-30 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm py-10 mb-10 origin-top"
         >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">My Journey</h2>
         </motion.div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,17 +8,48 @@ import dynamic from "next/dynamic";
 import "easymde/dist/easymde.min.css";
 import Image from "next/image";
 
-// Dynamically import SimpleMDE to avoid SSR issues
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), { ssr: false });
 
-export default function CreateBlog() {
+export default function EditBlog({ params }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [coverImage, setCoverImage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const router = useRouter();
+
+  // Unwrap params using React.use() or await in async component, but this is a client component.
+  // In Next.js 15 client components, params is a promise.
+  // However, for simplicity in standard client usage, we can use useEffect to fetch data.
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      // We need the ID. In client components, we can get it from params prop if it's passed down,
+      // or we can fetch it. But params is a Promise in Next 15.
+      // Let's assume the parent passes it or we unwrap it.
+      // Actually, let's fetch the post data first.
+      
+      // Wait for params to resolve if it's a promise (Next 15)
+      const resolvedParams = await params;
+      const id = resolvedParams.id;
+
+      const res = await fetch(`/api/blog/get?id=${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTitle(data.title);
+        setContent(data.content);
+        setTags(data.tags || "");
+        setCoverImage(data.coverImage || "");
+      } else {
+        alert("Failed to load post");
+        router.push("/blog");
+      }
+      setFetching(false);
+    };
+    fetchData();
+  }, [params, router]);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -50,9 +81,13 @@ export default function CreateBlog() {
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch("/api/blog", {
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
+
+    const res = await fetch("/api/blog/edit", {
       method: "POST",
       body: JSON.stringify({ 
+        id,
         title, 
         content, 
         tags, 
@@ -63,7 +98,7 @@ export default function CreateBlog() {
     if (res.ok) {
       router.push("/blog");
     } else {
-      alert("Failed to create post");
+      alert("Failed to update post");
     }
     setLoading(false);
   };
@@ -78,16 +113,19 @@ export default function CreateBlog() {
     };
   }, []);
 
+  if (fetching) {
+    return <div className="min-h-screen bg-primary flex items-center justify-center text-white">Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-primary pt-32 px-4 md:px-12 pb-20">
       <div className="container mx-auto max-w-4xl">
-        <h1 className="text-4xl font-bold text-white mb-8">Create New Post</h1>
+        <h1 className="text-4xl font-bold text-white mb-8">Edit Post</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             
             {/* Main Form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-8 lg:col-span-2">
-            {/* Title & Tags */}
             <div className="grid grid-cols-1 gap-6">
                 <div className="space-y-2">
                 <label className="text-white/60 font-medium">Title</label>
@@ -95,22 +133,19 @@ export default function CreateBlog() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="bg-zinc-900 border-white/10 text-white h-12 text-lg"
-                    placeholder="Enter post title"
                     required
                 />
                 </div>
                 <div className="space-y-2">
-                <label className="text-white/60 font-medium">Tags (comma separated)</label>
+                <label className="text-white/60 font-medium">Tags</label>
                 <Input
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
                     className="bg-zinc-900 border-white/10 text-white h-12"
-                    placeholder="tech, life, coding"
                 />
                 </div>
             </div>
 
-            {/* Cover Image Upload */}
             <div className="space-y-2">
                 <label className="text-white/60 font-medium">Cover Image</label>
                 <div className="flex flex-col gap-4">
@@ -149,7 +184,6 @@ export default function CreateBlog() {
                 )}
             </div>
             
-            {/* Rich Text Editor */}
             <div className="space-y-2 prose-editor-wrapper">
                 <label className="text-white/60 font-medium">Content</label>
                 <div className="bg-white rounded-lg overflow-hidden text-black">
@@ -167,7 +201,7 @@ export default function CreateBlog() {
                 disabled={loading || uploading} 
                 className="bg-accent text-primary hover:bg-accent/90 h-12 px-8 text-lg font-bold w-full md:w-auto"
                 >
-                {loading ? "Publishing..." : "Publish Post"}
+                {loading ? "Saving..." : "Save Changes"}
                 </Button>
             </div>
             </form>

@@ -11,7 +11,7 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(Flip);
 
-const Header = () => {
+const Header = ({ initialAnimEnabled = true }) => {
   const containerRef = useRef(null);
   const introHelloRef = useRef(null);
   const headerHelloRef = useRef(null);
@@ -19,19 +19,28 @@ const Header = () => {
   const introContainerRef = useRef(null);
   
   const [animationComplete, setAnimationComplete] = useState(false);
-  const [animEnabled, setAnimEnabled] = useState(true);
+  const [animEnabled, setAnimEnabled] = useState(initialAnimEnabled);
   const [mounted, setMounted] = useState(false);
+  const [introSkipped, setIntroSkipped] = useState(!initialAnimEnabled);
 
   useEffect(() => {
     setMounted(true);
-    const disabled = localStorage.getItem("animationDisabled") === "true";
-    setAnimEnabled(!disabled);
-  }, []);
+    // Sync state with localStorage if needed, but prop (cookie) is source of truth for initial render
+    const localDisabled = localStorage.getItem("animationDisabled") === "true";
+    if (localDisabled !== !initialAnimEnabled) {
+        // If mismatch, we could sync one way or the other. 
+        // Let's trust the prop for this session to avoid flash.
+    }
+  }, [initialAnimEnabled]);
 
   const toggleAnim = () => {
     const newState = !animEnabled;
     setAnimEnabled(newState);
+    setIntroSkipped(!newState);
+    
+    // Update both storages
     localStorage.setItem("animationDisabled", (!newState).toString());
+    document.cookie = `animationDisabled=${!newState}; path=/; max-age=31536000`; // 1 year
   };
 
   useGSAP(() => {
@@ -40,39 +49,27 @@ const Header = () => {
     const introBg = introBgRef.current;
     const introContainer = introContainerRef.current;
 
-    // Check if animation has already played in this session OR is disabled
-    const hasPlayed = typeof window !== "undefined" && sessionStorage.getItem("introPlayed");
-    const isDisabled = typeof window !== "undefined" && localStorage.getItem("animationDisabled") === "true";
-
-    if (!hasPlayed && !isDisabled) {
+    if (animEnabled) {
         // PLAY ANIMATION
         if (introHello && headerHello && introBg && introContainer) {
-            // Make intro visible for the animation
-            gsap.set([introBg, introContainer], { autoAlpha: 1 });
+            // Ensure intro is visible (remove hidden class via state, but also ensure GSAP visibility)
+            gsap.set([introBg, introContainer], { autoAlpha: 1, display: "flex" });
 
-            // Animate the intro "Hello!" to the position of the header "Hello!"
             Flip.fit(introHello, headerHello, {
                 duration: 1.2,
                 ease: "power4.inOut",
                 scale: true,
                 absolute: true,
                 onComplete: () => {
-                    // 1. Fade out the black background
                     gsap.to(introBg, {
                         opacity: 0,
                         duration: 0.8,
                         ease: "power2.inOut",
                         onComplete: () => {
-                            // 2. Swap text and hide intro layer
                             gsap.set(headerHello, { opacity: 1 });
                             gsap.set(introContainer, { display: "none" });
                             gsap.set(introBg, { display: "none" });
-                            
                             setAnimationComplete(true);
-                            // Mark animation as played
-                            if (typeof window !== "undefined") {
-                                sessionStorage.setItem("introPlayed", "true");
-                            }
                         }
                     });
                 },
@@ -80,14 +77,14 @@ const Header = () => {
         }
     } else {
         // SKIP ANIMATION
-        // Intro layers are already invisible by default CSS
+        // Layers are hidden by default via JSX className when animEnabled is false
         if (headerHello) gsap.set(headerHello, { opacity: 1 });
         setAnimationComplete(true);
     }
-  }, { scope: containerRef, revertOnUpdate: true });
+  }, { scope: containerRef, revertOnUpdate: true, dependencies: [] }); // Run once on mount
 
   const navItems = [
-    { label: "Projects", href: "#services" },
+    { label: "Projects", href: "#projects" },
     { label: "Contact", href: "#contact" },
     { label: "Blog", href: "/blog" },
   ];
@@ -105,9 +102,18 @@ const Header = () => {
         </button>
       )}
 
-      {/* INTRO LAYERS - Hidden by default (invisible) to prevent flash for returning users */}
-      <div ref={introBgRef} id="intro-bg" className="fixed inset-0 bg-black z-40 invisible" />
-      <div ref={introContainerRef} id="intro-container" className="fixed inset-0 z-50 flex justify-center items-center pointer-events-none invisible">
+      {/* INTRO LAYERS */}
+      {/* If animEnabled is false, we hide these immediately with CSS to prevent flash */}
+      <div 
+        ref={introBgRef} 
+        id="intro-bg" 
+        className={`fixed inset-0 bg-black z-40 ${animEnabled ? "" : "hidden"}`} 
+      />
+      <div 
+        ref={introContainerRef} 
+        id="intro-container" 
+        className={`fixed inset-0 z-50 flex justify-center items-center pointer-events-none ${animEnabled ? "" : "hidden"}`}
+      >
         <h1 ref={introHelloRef} id="intro-hello" className="text-[25vw] font-bold text-white leading-none tracking-tighter">
           Hello!
         </h1>
@@ -137,7 +143,7 @@ const Header = () => {
                     <motion.h2 
                       initial={{ opacity: 0, y: 20 }}
                       animate={animationComplete ? { opacity: 1, y: 0 } : {}}
-                      transition={{ duration: 0.8 }}
+                      transition={{ duration: introSkipped ? 0 : 0.8 }}
                       className="mt-2 text-5xl md:text-7xl font-medium text-white/ tracking-tight"
                     >
                         I'm Abhinav.
@@ -167,10 +173,12 @@ const Header = () => {
             <motion.div 
                 initial={{ opacity: 0 }}
                 animate={animationComplete ? { opacity: 1 } : {}}
-                transition={{ delay: 0.5, duration: 0.5 }}
+                transition={{ delay: introSkipped ? 0 : 0.5, duration: introSkipped ? 0 : 0.5 }}
                 className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
             >
+              <a href="#projects">
                 <BsArrowDown className="text-4xl text-white animate-bounce" />
+              </a>
             </motion.div>
         </div>
       </section>

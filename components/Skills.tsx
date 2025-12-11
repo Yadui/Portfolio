@@ -142,7 +142,7 @@ let nodes: SkillNode[] = [];
 
 // Soft boundary force
 function forceContainment(alpha: number) {
-  const BRAIN_RADIUS_APPROX = 330;
+  const BRAIN_RADIUS_APPROX = 280;
   const CENTER_X = 0;
   const CENTER_Y = 0;
 
@@ -265,8 +265,8 @@ export default function Skills() {
       .force("charge", d3.forceManyBody().strength(-120))
       .force("link", (d3.forceLink(links).distance(70)))
       .force("collide", d3.forceCollide(55).strength(1))
-      .force("x", d3.forceX((d: any) => d.targetX).strength(0.08))
-      .force("y", d3.forceY((d: any) => d.targetY).strength(0.08))
+      .force("x", d3.forceX((d: any) => d.targetX).strength(0.12))
+      .force("y", d3.forceY((d: any) => d.targetY).strength(0.12))
       .force("containment", forceContainment as any);
 
     simulation.on("tick", () => {
@@ -300,6 +300,7 @@ export default function Skills() {
     const nodes = (containerRef.current as any)?.__nodes as SkillNode[];
     const node = nodes?.find((n) => n.id === id);
     if (node) {
+      // Sync d3 position with framer motion drag position
       node.fx = positions[id].x.get();
       node.fy = positions[id].y.get();
     }
@@ -318,96 +319,99 @@ export default function Skills() {
   };
 
   return (
-    <section className="py-28 bg-white overflow-hidden">
-      <h2 className="text-center text-4xl font-bold max-h-full text-gray-900 mb-5">Technical Skills</h2>
+    <section className="py-28 bg-white relative">
+      <div className="sticky top-0 z-30 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm py-10 mb-5 origin-top">
+        <h2 className="text-center text-4xl font-bold max-h-full text-gray-900">Technical Skills</h2>
+      </div>
 
-      <div
-        ref={containerRef}
-        className="relative mx-auto w-full h-[1000px] flex items-center justify-center overflow-visible -mt-20"
-        style={{ transform: "translateZ(0)" }}
-      >
-        {/* Background Decorative SVG */}
-        <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shapeRendering="geometricPrecision" textRendering="geometricPrecision" project-id="9dd035939f82413b8dd7f743180e4a30" export-id="bc5e64b270314740b7ac8b8a4ec32bcc"
-          className="absolute w-[1350px] h-[1350px] max-w-none opacity-20"
-          style={{
-            transform: 'translate(-50%, -45%)',
-            top: '50%',
-            left: '50%',
-          }}
+      <div className="overflow-hidden w-full">
+        <div
+          ref={containerRef}
+          className="relative mx-auto w-full h-[600px] md:h-[1000px] flex items-center justify-center overflow-visible -mt-10 md:-mt-20"
+          style={{ transform: "translateZ(0)" }}
         >
-          <path d="" fill="none" stroke="#3f5787" strokeWidth="0.6" />
-          <path d="M92.4466,158.59289c-10.57235,0-23.37585,2.66875-33.4468-1.35963-14.59217-5.83687-25.3364-28.69193-17.40321-43.2361c5.49842-10.08043,14.19438-16.01631,22.56979-22.29787c7.0864-5.3148,7.438735-13.307333,15.964935-18.423053c6.46625-3.87975,23.721925-2.448447,29.990415-5.234437c23.51382-10.45058,30.43951-12.31519,54.65697-5.71043c7.63907,2.08338,18.31928.501,25.01712,5.71043c3.00741,2.33909,6.38445,8.430948,9.51738,10.310708c4.88749,2.9325,9.55501,2.246242,13.32433,7.092512c2.34617,3.0165,4.28835,13.63771,6.52621,15.46869c6.55855,5.36609,11.56941,3.65753,14.14011,13.08345c1.18386,4.34084-.89316,13.40258.27192,15.49974c3.57408,6.43334,6.683512,4.41089,7.868142,16.2572.88526,8.85261-2.805572,11.70347-3.245412,16.1019-.55452,5.54522-3.962324,8.753438-10.009294,12.381618-2.96507,1.77904-13.947476,5.864712-15.551676,7.468922-8.22022,8.22022,5.16793,4.31119-13.32433,11.7081-5.98571,2.39429-3.51594,5.26384-9.51738,4.06356-.44441-.08888-9.44114,3.78874-9.78931,4.07888-2.84329,2.36941,6.45936,17.45335,2.1754,20.66631-13.73537,10.30153-32.62569-13.53938-37.7976-24.74519-.8991-1.94805-4.21267-13.13355-6.52621-13.59626-9.95966-1.99194-15.94398,6.40088-27.73637-2.1754-4.87527-3.54565-9.95011-8.15188-12.23663-13.86818-.54541-1.36353-1.60167-5.97239-3.2631-6.52621-4.83879-1.61293,6.73016.84297-2.1754-2.71926" fill="none" stroke="#3f5787" strokeWidth="0.6" />
-        </svg>
+          {/* Background Decorative SVG */}
+          <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shapeRendering="geometricPrecision" textRendering="geometricPrecision" project-id="9dd035939f82413b8dd7f743180e4a30" export-id="bc5e64b270314740b7ac8b8a4ec32bcc"
+            className="absolute w-[800px] h-[800px] md:w-[1350px] md:h-[1350px] max-w-none opacity-20"
+            style={{
+              transform: 'translate(-50%, -45%)',
+              top: '50%',
+              left: '50%',
+            }}
+          >
+            <path d="" fill="none" stroke="#3f5787" strokeWidth="0.6" />
+            <path d="M92.4466,158.59289c-10.57235,0-23.37585,2.66875-33.4468-1.35963-14.59217-5.83687-25.3364-28.69193-17.40321-43.2361c5.49842-10.08043,14.19438-16.01631,22.56979-22.29787c7.0864-5.3148,7.438735-13.307333,15.964935-18.423053c6.46625-3.87975,23.721925-2.448447,29.990415-5.234437c23.51382-10.45058,30.43951-12.31519,54.65697-5.71043c7.63907,2.08338,18.31928.501,25.01712,5.71043c3.00741,2.33909,6.38445,8.430948,9.51738,10.310708c4.88749,2.9325,9.55501,2.246242,13.32433,7.092512c2.34617,3.0165,4.28835,13.63771,6.52621,15.46869c6.55855,5.36609,11.56941,3.65753,14.14011,13.08345c1.18386,4.34084-.89316,13.40258.27192,15.49974c3.57408,6.43334,6.683512,4.41089,7.868142,16.2572.88526,8.85261-2.805572,11.70347-3.245412,16.1019-.55452,5.54522-3.962324,8.753438-10.009294,12.381618-2.96507,1.77904-13.947476,5.864712-15.551676,7.468922-8.22022,8.22022,5.16793,4.31119-13.32433,11.7081-5.98571,2.39429-3.51594,5.26384-9.51738,4.06356-.44441-.08888-9.44114,3.78874-9.78931,4.07888-2.84329,2.36941,6.45936,17.45335,2.1754,20.66631-13.73537,10.30153-32.62569-13.53938-37.7976-24.74519-.8991-1.94805-4.21267-13.13355-6.52621-13.59626-9.95966-1.99194-15.94398,6.40088-27.73637-2.1754-4.87527-3.54565-9.95011-8.15188-12.23663-13.86818-.54541-1.36353-1.60167-5.97239-3.2631-6.52621-4.83879-1.61293,6.73016.84297-2.1754-2.71926" fill="none" stroke="#3f5787" strokeWidth="0.6" />
+          </svg>
 
-        {/* --- CONNECTIONS LAYER --- */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-10"
-          style={{ overflow: 'visible', transform: 'translate(50%, 50%)' }}
-        >
-          <g>
-            {initialSkills.flatMap(a =>
-              a.connections.map(cid => {
-                const b = initialSkills.find(s => s.id === cid);
-                if (!b) return null;
+          {/* --- CONNECTIONS LAYER --- */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-10"
+            style={{ overflow: 'visible', transform: 'translate(50%, 50%)' }}
+          >
+            <g>
+              {initialSkills.flatMap(a =>
+                a.connections.map(cid => {
+                  const b = initialSkills.find(s => s.id === cid);
+                  if (!b) return null;
 
-                const isRelated = draggingId !== null && (a.id === draggingId || b.id === draggingId);
+                  const isRelated = draggingId !== null && (a.id === draggingId || b.id === draggingId);
 
-                return (
-                  <SkillConnection
-                    key={`${a.id}-${b.id}`}
-                    x1={positions[a.id].x}
-                    y1={positions[a.id].y}
-                    x2={positions[b.id].x}
-                    y2={positions[b.id].y}
-                    isRelated={isRelated}
-                  />
-                );
-              })
-            )}
-          </g>
-        </svg>
+                  return (
+                    <SkillConnection
+                      key={`${a.id}-${b.id}`}
+                      x1={positions[a.id].x}
+                      y1={positions[a.id].y}
+                      x2={positions[b.id].x}
+                      y2={positions[b.id].y}
+                      isRelated={isRelated}
+                    />
+                  );
+                })
+              )}
+            </g>
+          </svg>
 
-        {/* --- NODES LAYER --- */}
-        {initialSkills.map(skill => {
-          const isDragging = draggingId === skill.id;
-          const isOther = draggingId && draggingId !== skill.id;
+          {/* --- NODES LAYER --- */}
+          {initialSkills.map(skill => {
+            const isDragging = draggingId === skill.id;
+            const isOther = draggingId && draggingId !== skill.id;
 
-          return (
-            <motion.div
-              key={skill.id}
-              drag
-              dragElastic={0}
-              dragMomentum={false}
-              onDragStart={() => handleDragStart(skill.id)}
-              onDrag={(e, info) => handleDrag(skill.id, info)}
-              onDragEnd={() => handleDragEnd(skill.id)}
-              style={{
-                x: positions[skill.id].x,
-                y: positions[skill.id].y,
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-              }}
-              whileHover={{ scale: 1.15, zIndex: 50 }}
-              whileTap={{ scale: 0.95 }}
-              animate={{
-                scale: isDragging ? 1.2 : (isOther ? 0.9 : 1),
-                opacity: isOther ? 0.5 : 1,
-                filter: isOther ? "blur(1px)" : "none",
-              }}
-              className="w-16 h-16 -ml-8 -mt-8 rounded-full bg-white shadow-xl border border-gray-100 cursor-grab active:cursor-grabbing flex items-center justify-center z-20 transition-colors"
-            >
-              {/* BRAND COLOR APPLIED HERE */}
-              <div className="text-3xl" style={{ color: skill.color }}>
-                {skill.icon}
-              </div>
+            return (
+              <motion.div
+                key={skill.id}
+                drag
+                dragElastic={0.2}
+                onDragStart={() => handleDragStart(skill.id)}
+                onDrag={(e, info) => handleDrag(skill.id, info)}
+                onDragEnd={() => handleDragEnd(skill.id)}
+                style={{
+                  x: positions[skill.id].x,
+                  y: positions[skill.id].y,
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                }}
+                whileHover={{ scale: 1.15, zIndex: 50 }}
+                whileTap={{ scale: 0.95 }}
+                animate={{
+                  scale: isDragging ? 1.2 : (isOther ? 0.9 : 1),
+                  opacity: isOther ? 0.5 : 1,
+                  filter: isOther ? "blur(1px)" : "none",
+                }}
+                className="w-12 h-12 md:w-16 md:h-16 -ml-6 -mt-6 md:-ml-8 md:-mt-8 rounded-full bg-white shadow-xl border border-gray-100 cursor-grab active:cursor-grabbing flex items-center justify-center z-20 transition-colors"
+              >
+                {/* BRAND COLOR APPLIED HERE */}
+                <div className="text-2xl md:text-3xl" style={{ color: skill.color }}>
+                  {skill.icon}
+                </div>
 
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] font-bold tracking-wide rounded opacity-0 hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30">
-                {skill.name}
-              </div>
-            </motion.div>
-          );
-        })}
+                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] font-bold tracking-wide rounded opacity-0 hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30">
+                  {skill.name}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

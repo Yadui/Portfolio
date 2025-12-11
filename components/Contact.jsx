@@ -167,7 +167,7 @@ const Contact = () => {
                  </div>
               
 
-               <Button size="lg" className="w-full bg-accent text-primary hover:bg-accent/90 transition-all rounded-xl font-bold text-lg h-14 mt-4" disabled={loading}>
+               <Button size="lg" className="w-full bg-accent text-primary hover:bg-accent/80 transition-all rounded-xl font-bold text-lg h-14 mt-4" disabled={loading}>
                  {loading ? (
                    <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                  ) : (

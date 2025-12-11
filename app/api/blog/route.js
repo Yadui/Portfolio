@@ -1,21 +1,26 @@
+import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { posts } from "@/lib/schema";
-import { verifySession } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
 import slugify from "slugify";
 
 export async function POST(req) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session")?.value;
-  const session = token ? await verifySession(token) : null;
+  const { userId } = await auth();
 
-  if (!session) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { title, content, tags, coverImage } = await req.json();
-  const slug = slugify(title, { lower: true, strict: true });
+  let slug = slugify(title, { lower: true, strict: true });
+  
+  // Check for existing slug to avoid unique constraint errors
+  const existing = await db.select().from(posts).where(eq(posts.slug, slug)).get();
+  if (existing) {
+    slug = `${slug}-${Date.now().toString().slice(-6)}`;
+  }
+
   const excerpt = content.substring(0, 150) + "...";
 
   try {
