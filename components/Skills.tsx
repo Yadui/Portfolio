@@ -144,7 +144,7 @@ let nodes: SkillNode[] = [];
 function forceContainment(alpha: number) {
   const BRAIN_RADIUS_APPROX = 280;
   const CENTER_X = 0;
-  const CENTER_Y = 0;
+  const CENTER_Y = -10;
 
   nodes.forEach((node) => {
     let dx = node.x - CENTER_X;
@@ -191,7 +191,7 @@ const SkillConnection = ({
       <motion.line
         x1={x1} y1={y1} x2={x2} y2={y2}
         stroke={isRelated ? "#00ff99" : "#cbd5e1"} // Bright Green if related, slate-300 if not
-        strokeWidth={isRelated ? 3 : 1.5}
+        strokeWidth={isRelated ? 2 : 1}
         strokeLinecap="round"
         opacity={isRelated ? 1 : 0.3}
         transition={{ duration: 0.2 }}
@@ -204,7 +204,7 @@ const SkillConnection = ({
         <motion.line
           x1={x1} y1={y1} x2={x2} y2={y2}
           stroke={isRelated ? "#00ff99" : "#4ade80"} // Bright Green if related, Green pulse otherwise
-          strokeWidth={isRelated ? 3 : 5}
+          strokeWidth={isRelated ? 2 : 3}
           strokeLinecap="round"
           // Dash array: [Length of pulse, Length of gap]
           // Gap is huge (1000) to ensure only one pulse is visible at a time
@@ -243,7 +243,7 @@ export default function Skills() {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const COORDINATE_SCALE = 12;
+    const COORDINATE_SCALE = 5;
 
     nodes = initialSkills.map((s) => {
       const tx = s.bx * COORDINATE_SCALE;
@@ -262,9 +262,9 @@ export default function Skills() {
     ) as { source: SkillNode; target: SkillNode }[];
 
     const simulation = d3.forceSimulation(nodes as any)
-      .force("charge", d3.forceManyBody().strength(-120))
-      .force("link", (d3.forceLink(links).distance(70)))
-      .force("collide", d3.forceCollide(55).strength(1))
+      .force("charge", d3.forceManyBody().strength(-100))
+      .force("link", (d3.forceLink(links).distance(55)))
+      .force("collide", d3.forceCollide(45).strength(1))
       .force("x", d3.forceX((d: any) => d.targetX).strength(0.12))
       .force("y", d3.forceY((d: any) => d.targetY).strength(0.12))
       .force("containment", forceContainment as any);
@@ -327,12 +327,12 @@ export default function Skills() {
       <div className="overflow-hidden w-full">
         <div
           ref={containerRef}
-          className="relative mx-auto w-full h-[500px] md:h-[800px] scale-90 flex items-center justify-center overflow-visible -mt-10 md:-mt-20"
+          className="relative mx-auto w-full h-[400px] md:h-[700px] flex items-center justify-center overflow-visible -mt-10 md:-mt-20"
           style={{ transform: "translateZ(0) scale(0.9)" }}
         >
           {/* Background Decorative SVG */}
           <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shapeRendering="geometricPrecision" textRendering="geometricPrecision" project-id="9dd035939f82413b8dd7f743180e4a30" export-id="bc5e64b270314740b7ac8b8a4ec32bcc"
-            className="absolute w-[800px] h-[800px] md:w-[1350px] md:h-[1350px] max-w-none opacity-20"
+            className="absolute w-[600px] h-[600px] md:w-[1000px] md:h-[1000px] max-w-none opacity-20"
             style={{
               transform: 'translate(-50%, -45%)',
               top: '50%',
@@ -398,10 +398,10 @@ export default function Skills() {
                   opacity: isOther ? 0.5 : 1,
                   filter: isOther ? "blur(1px)" : "none",
                 }}
-                className="w-12 h-12 md:w-16 md:h-16 -ml-6 -mt-6 md:-ml-8 md:-mt-8 rounded-full bg-white shadow-xl border border-gray-100 cursor-grab active:cursor-grabbing flex items-center justify-center z-20 transition-colors"
+                className="w-10 h-10 md:w-12 md:h-12 -ml-5 -mt-5 md:-ml-6 md:-mt-6 rounded-full bg-white shadow-xl border border-gray-100 cursor-grab active:cursor-grabbing flex items-center justify-center z-20 transition-colors"
               >
                 {/* BRAND COLOR APPLIED HERE */}
-                <div className="text-2xl md:text-3xl" style={{ color: skill.color }}>
+                <div className="text-xl md:text-2xl" style={{ color: skill.color }}>
                   {skill.icon}
                 </div>
 

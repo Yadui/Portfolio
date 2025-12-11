@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FiHeart, FiBookmark, FiShare2, FiGithub, FiTwitter, FiLinkedin, FiLink, FiInfo, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
 import Image from "next/image";
-import { slugify } from "@/lib/utils"; // We might need to implement this or import it if enabled
+import { verifyAuth } from "@/lib/auth";
 
 // Helper to generate IDs for headings
 function generateId(text) {
@@ -126,8 +126,8 @@ const MarkdownComponents = {
         }
     }
     
-    // Normal paragraph
-    return <p className="mb-6 leading-relaxed text-white/80">{children}</p>;
+    // Normal paragraph (using div to avoid hydration errors with nested divs like images/code)
+    return <div className="mb-6 leading-relaxed text-white/80">{children}</div>;
   },
 
   // Unwrap pre to avoid hydration mismatches with div-in-pre
@@ -167,11 +167,14 @@ export default async function BlogPost({ params }) {
     notFound();
   }
 
-  // const user = await currentUser();
-  // const isAdmin = !!user;
+  // Extract headings for TOC
+  // ...
+  
+  const user = await verifyAuth();
+  const isAdmin = !!user;
 
-  // Simplified: user is always considered admin for now
-  const isAdmin = true;
+  // Extract headings for TOC
+  // ...
 
   // Extract headings for TOC
   const headings = [];

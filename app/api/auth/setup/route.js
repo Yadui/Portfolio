@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
+import { users } from "@/lib/schema";
 
 export async function GET() {
   try {
@@ -14,16 +15,16 @@ export async function GET() {
     `);
 
     // Check if admin exists
-    const admin = await db.run(sql`SELECT * FROM users WHERE username = 'admin'`);
+    const existing = await db.select().from(users).where(eq(users.username, 'admin')).get();
     
-    // LibSQL/Drizzle raw result handling might vary, let's just try insert and ignore unique error
-    try {
-        await db.run(sql`
-            INSERT INTO users (username, password) VALUES ('admin', 'password123')
-        `);
-        return NextResponse.json({ message: "Setup complete. User 'admin' created." });
-    } catch (e) {
-        return NextResponse.json({ message: "User 'admin' likely already exists.", error: e.message });
+    if (existing) {
+       // Update password
+       await db.update(users).set({ password: 'password123' }).where(eq(users.username, 'admin'));
+       return NextResponse.json({ message: "Admin user updated. Password set to 'password123'" });
+    } else {
+       // Create new
+       await db.insert(users).values({ username: 'admin', password: 'password123' });
+       return NextResponse.json({ message: "Admin user created. Password is 'password123'" });
     }
 
   } catch (error) {
