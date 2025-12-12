@@ -1,13 +1,11 @@
 import Link from "next/link";
 
-import { FaGithub, FaLinkedin, FaKaggle } from "react-icons/fa";
-import { TbBrandLeetcode } from "react-icons/tb";
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const socials = [
   { icon: <FaGithub />, path: "https://github.com/Yadui" },
-  { icon: <FaLinkedin />, path: "https://www.linkedin.com/in/abhinav-yadav-a49408232" },
-  { icon: <FaKaggle />, path: "https://www.kaggle.com/abhinavyadav8" },
-  { icon: <TbBrandLeetcode />, path: "https://leetcode.com/u/abhinavyadav8/" },
+  { icon: <FaLinkedin />, path: "https://www.linkedin.com/in/abhinavyadav88" },
+  { icon: <FaTwitter />, path: "https://x.com/abhinav2302055" },
 ];
 
 const Socials = ({ containerStyles, iconStyles }) => {

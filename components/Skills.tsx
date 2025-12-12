@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, MotionValue, motionValue } from "framer-motion";
+import { motion, MotionValue, motionValue } from "framer-motion";
 import {
   FaHtml5, FaJs, FaReact, FaPython, FaGithub, FaDocker, FaAws
 } from "react-icons/fa";
@@ -11,121 +11,45 @@ import {
   SiKubernetes, SiTerraform, SiRedux, SiExpress, SiPostgresql,
   SiRedis, SiHuggingface, SiTensorflow, SiNotion, SiFigma
 } from "react-icons/si";
-import * as d3 from "d3-force";
+import * as d3force from "d3-force";
+import { polygonContains, polygonCentroid } from "d3-polygon";
 
 // --- MAPPED TO SCREENSHOT LAYOUT ---
 const initialSkills = [
-  // --- TOP ROW ---
-  { id: "js", name: "JS", icon: <FaJs />, color: "#F7DF1E", bx: 0, by: -50, group: "web", connections: ["react", "python"] }, // JS Yellow
-  { id: "react", name: "React", icon: <FaReact />, color: "#61DAFB", bx: -30, by: -35, group: "web", connections: ["js", "next", "tailwind", "html"] }, // React Cyan
-  { id: "python", name: "Python", icon: <FaPython />, color: "#3776AB", bx: 22, by: -32, group: "ai", connections: ["js", "openai", "pandas"] }, // Python Blue
+  // TOP LAYER (y: -16 to -22) - Compressed
+  { id: "js", name: "JS", icon: <FaJs />, color: "#F7DF1E", bx: 0, by: -26, group: "web", connections: ["react", "python"] },
+  { id: "python", name: "Python", icon: <FaPython />, color: "#3776AB", bx: 11, by: -28, group: "ai", connections: ["js", "openai", "pandas"] },
+  { id: "react", name: "React", icon: <FaReact />, color: "#61DAFB", bx: -15, by: -12, group: "web", connections: ["js", "next", "tailwind", "html"] },
+  { id: "redux", name: "Redux", icon: <SiRedux />, color: "#764ABC", bx: -10, by: -22, group: "web", connections: ["react"] },
 
-  // --- LEFT FLANK ---
-  { id: "tailwind", name: "Tailwind", icon: <SiTailwindcss />, color: "#06B6D4", bx: -45, by: 30, group: "web", connections: ["react", "html"] }, // Tailwind Cyan
-  { id: "html", name: "HTML", icon: <FaHtml5 />, color: "#E34F26", bx: -50, by: 5, group: "web", connections: ["react", "tailwind"] }, // HTML Orange
+  // UPPER-MIDDLE LAYER (y: -4 to -14)
+  { id: "express", name: "Express", icon: <SiExpress />, color: "#000000", bx: -20, by: -6, group: "web", connections: ["next"] },
+  { id: "huggingface", name: "HuggingFace", icon: <SiHuggingface />, color: "#FFCC00", bx: 15, by: -12, group: "ai", connections: ["openai"] },
+  { id: "openai", name: "OpenAI", icon: <SiOpenai />, color: "#10A37F", bx: 8, by: -12, group: "ai", connections: ["python", "azure", "copilot"] },
+  { id: "aws", name: "AWS", icon: <FaAws />, color: "#FF9900", bx: 17, by: -15, group: "cloud", connections: ["docker", "terraform"] },
+  { id: "copilot", name: "Copilot", icon: <SiGithubcopilot />, color: "#000000", bx: 12, by: -9, group: "ai", connections: ["openai", "vscode", "numpy"] },
 
-  // --- CENTER CORE ---
-  { id: "next", name: "Next.js", icon: <SiNextdotjs />, color: "#000000", bx: -15, by: -10, group: "web", connections: ["react", "azure"] }, // Next Black
-  { id: "azure", name: "Azure", icon: <SiMicrosoftazure />, color: "#0078D4", bx: 3, by: -15, group: "cloud", connections: ["next", "docker", "openai"] }, // Azure Blue
-  { id: "docker", name: "Docker", icon: <FaDocker />, color: "#2496ED", bx: -25, by: -5, group: "cloud", connections: ["azure", "aws", "k8s"] }, // Docker Blue
-  { id: "aws", name: "AWS", icon: <FaAws />, color: "#FF9900", bx: 35, by: -25, group: "cloud", connections: ["docker", "terraform"] }, // AWS Orange
+  // MIDDLE LAYER (y: -4 to +4)
+  { id: "next", name: "Next.js", icon: <SiNextdotjs />, color: "#000000", bx: -6, by: -5, group: "web", connections: ["react", "azure"] },
+  { id: "html", name: "HTML", icon: <FaHtml5 />, color: "#E34F26", bx: -22, by: 0, group: "web", connections: ["react", "tailwind"] },
+  { id: "tailwind", name: "Tailwind", icon: <SiTailwindcss />, color: "#06B6D4", bx: -18, by: 4, group: "web", connections: ["react", "html"] },
+  { id: "docker", name: "Docker", icon: <FaDocker />, color: "#2496ED", bx: -13, by: 1, group: "cloud", connections: ["azure", "aws", "k8s"] },
+  { id: "azure", name: "Azure", icon: <SiMicrosoftazure />, color: "#0078D4", bx: 0, by: 0, group: "cloud", connections: ["next", "docker", "openai"] },
+  { id: "pandas", name: "Pandas", icon: <SiPandas />, color: "#150458", bx: 14, by: -2, group: "ai", connections: ["python", "numpy"] },
+  { id: "vscode", name: "VS Code", icon: <SiVisualstudiocode />, color: "#007ACC", bx: 18, by: 3, group: "tools", connections: ["copilot", "github"] },
+  { id: "numpy", name: "NumPy", icon: <SiNumpy />, color: "#013243", bx: 20, by: 0, group: "ai", connections: ["pandas", "copilot"] },
 
-  // --- RIGHT FLANK ---
-  { id: "openai", name: "OpenAI", icon: <SiOpenai />, color: "#10A37F", bx: 15, by: -15, group: "ai", connections: ["python", "azure", "copilot"] }, // OpenAI Green
-  { id: "pandas", name: "Pandas", icon: <SiPandas />, color: "#150458", bx: 25, by: -10, group: "ai", connections: ["python", "numpy"] }, // Pandas Navy
-  { id: "copilot", name: "Copilot", icon: <SiGithubcopilot />, color: "#000000", bx: 25, by: 5, group: "ai", connections: ["openai", "vscode", "numpy"] }, // Copilot Black
-  { id: "numpy", name: "NumPy", icon: <SiNumpy />, color: "#013243", bx: 35, by: 10, group: "ai", connections: ["pandas", "copilot"] }, // NumPy Blue
+  // LOWER-MIDDLE LAYER (y: +6 to +12)
+  { id: "postgres", name: "Postgres", icon: <SiPostgresql />, color: "#336791", bx: -17, by: 7, group: "cloud", connections: ["docker"] },
+  { id: "redis", name: "Redis", icon: <SiRedis />, color: "#DC382D", bx: -12, by: 11, group: "cloud", connections: ["docker"] },
+  { id: "tensorflow", name: "TensorFlow", icon: <SiTensorflow />, color: "#FF6F00", bx: 18, by: 9, group: "ai", connections: ["numpy"] },
+  { id: "figma", name: "Figma", icon: <SiFigma />, color: "#F24E1E", bx: 22, by: 12, group: "tools", connections: ["vscode"] },
 
-  // --- BOTTOM ROW ---
-  { id: "k8s", name: "K8s", icon: <SiKubernetes />, color: "#326CE5", bx: -10, by: 30, group: "cloud", connections: ["docker", "terraform"] }, // K8s Blue
-  { id: "terraform", name: "Terraform", icon: <SiTerraform />, color: "#7B42BC", bx: 5, by: 35, group: "cloud", connections: ["aws", "k8s"] }, // Terraform Purple
-  { id: "vscode", name: "VS Code", icon: <SiVisualstudiocode />, color: "#007ACC", bx: 30, by: 5, group: "tools", connections: ["copilot", "github"] }, // VS Code Blue
-
-  // --- BRAIN STEM ---
-  { id: "github", name: "GitHub", icon: <FaGithub />, color: "#181717", bx: -10, by: 50, group: "tools", connections: ["vscode"] }, // GitHub Black
-  // --- EXTRA WEB TECH ---
-  {
-    id: "redux",
-    name: "Redux",
-    icon: <SiRedux />,
-    color: "#764ABC",
-    bx: -18, by: -18,
-    group: "web",
-    connections: ["react"]
-  },
-
-  {
-    id: "express",
-    name: "Express",
-    icon: <SiExpress />,
-    color: "#000000",
-    bx: -15, by: -20,
-    group: "web",
-    connections: ["next"]
-  },
-
-  // --- EXTRA CLOUD/DB ---
-  {
-    id: "postgres",
-    name: "Postgres",
-    icon: <SiPostgresql />,
-    color: "#336791",
-    bx: -32, by: 12,
-    group: "cloud",
-    connections: ["docker"]
-  },
-
-  {
-    id: "redis",
-    name: "Redis",
-    icon: <SiRedis />,
-    color: "#DC382D",
-    bx: -28, by: 20,
-    group: "cloud",
-    connections: ["docker"]
-  },
-
-  // --- EXTRA AI/ML ---
-  {
-    id: "huggingface",
-    name: "HuggingFace",
-    icon: <SiHuggingface />,
-    color: "#FFCC00",
-    bx: 22, by: -6,
-    group: "ai",
-    connections: ["openai"]
-  },
-
-  {
-    id: "tensorflow",
-    name: "TensorFlow",
-    icon: <SiTensorflow />,
-    color: "#FF6F00",
-    bx: 25, by: 5,
-    group: "ai",
-    connections: ["numpy"]
-  },
-
-  // --- EXTRA TOOLS / DESIGN ---
-  {
-    id: "notion",
-    name: "Notion",
-    icon: <SiNotion />,
-    color: "#000000",
-    bx: -10, by: 30,
-    group: "tools",
-    connections: ["github"]
-  },
-
-  {
-    id: "figma",
-    name: "Figma",
-    icon: <SiFigma />,
-    color: "#F24E1E",
-    bx: 45, by: 15,
-    group: "tools",
-    connections: ["vscode"]
-  },
+  // BOTTOM LAYER (y: +16 to +24)
+  { id: "k8s", name: "K8s", icon: <SiKubernetes />, color: "#326CE5", bx: -7, by: 14, group: "cloud", connections: ["docker", "terraform"] },
+  { id: "terraform", name: "Terraform", icon: <SiTerraform />, color: "#7B42BC", bx: 3, by: 21, group: "cloud", connections: ["aws", "k8s"] },
+  { id: "github", name: "GitHub", icon: <FaGithub />, color: "#181717", bx: 16, by: 23, group: "tools", connections: ["vscode"] },
+  { id: "notion", name: "Notion", icon: <SiNotion />, color: "#000000", bx: 0, by: 28, group: "tools", connections: ["github"] },
 ] as const;
 
 type SkillNode = {
@@ -138,33 +62,25 @@ type SkillNode = {
   targetY?: number;
 } & (typeof initialSkills)[number];
 
-let nodes: SkillNode[] = [];
+// Global nodes variable removed
 
-// Soft boundary force
-function forceContainment(alpha: number) {
-  const BRAIN_RADIUS_APPROX = 280;
-  const CENTER_X = 0;
-  const CENTER_Y = -10;
 
-  nodes.forEach((node) => {
-    let dx = node.x - CENTER_X;
-    let dy = node.y - CENTER_Y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
+// Soft boundary force replaced by shape containment
 
-    if (distance > BRAIN_RADIUS_APPROX) {
-      let ratio = BRAIN_RADIUS_APPROX / distance;
-      let targetX = CENTER_X + dx * ratio;
-      let targetY = CENTER_Y + dy * ratio;
-      node.x = node.x + (targetX - node.x) * alpha * 0.18;
-      node.y = node.y + (targetY - node.y) * alpha * 0.18;
-    }
-  });
+const CENTER_X = 0;
+const CENTER_Y = -10;
+// COORDINATE_SCALE removed (now scaling dynamically)
+
+function pathToPolygon(pathEl: SVGPathElement, step = 3) {
+  const length = pathEl.getTotalLength();
+  const points: [number, number][] = [];
+  for (let i = 0; i < length; i += step) {
+    const p = pathEl.getPointAtLength(i);
+    points.push([p.x, p.y]);
+  }
+  return points;
 }
 
-/**
- * Individual Connection Component
- * Handles its own random timing for the pulse animation to create an organic look.
- */
 const SkillConnection = ({
   x1, y1, x2, y2,
   isRelated
@@ -173,50 +89,36 @@ const SkillConnection = ({
   x2: MotionValue<number>, y2: MotionValue<number>,
   isRelated: boolean
 }) => {
-  // We use state to hold the random timing so it doesn't change on every render,
-  // but only generates once on mount (client-side only to avoid hydration mismatch).
   const [timing, setTiming] = useState<{ duration: number; delay: number } | null>(null);
 
   useEffect(() => {
-    // Random duration between 1.5s and 3.5s
     const duration = 1.5 + Math.random() * 3.0;
-    // Random initial delay between 0s and 4s so they don't all start at once
     const delay = Math.random() * 4.0;
     setTiming({ duration, delay });
   }, []);
 
   return (
     <>
-      {/* 1. Base Static Line (The wire) */}
       <motion.line
         x1={x1} y1={y1} x2={x2} y2={y2}
-        stroke={isRelated ? "#00ff99" : "#cbd5e1"} // Bright Green if related, slate-300 if not
+        stroke={isRelated ? "#00ff99" : "#cbd5e1"}
         strokeWidth={isRelated ? 2 : 1}
         strokeLinecap="round"
         opacity={isRelated ? 1 : 0.3}
         transition={{ duration: 0.2 }}
       />
-
-      {/* 2. Pulse Animation (The data packet) 
-          Only render if timing is set (client-side) to avoid hydration errors.
-      */}
       {timing && (
         <motion.line
           x1={x1} y1={y1} x2={x2} y2={y2}
-          stroke={isRelated ? "#00ff99" : "#4ade80"} // Bright Green if related, Green pulse otherwise
+          stroke={isRelated ? "#00ff99" : "#4ade80"}
           strokeWidth={isRelated ? 2 : 3}
           strokeLinecap="round"
-          // Dash array: [Length of pulse, Length of gap]
-          // Gap is huge (1000) to ensure only one pulse is visible at a time
           strokeDasharray="15 1000"
-          // Animate offset to move the dash along the path
-          animate={{
-            strokeDashoffset: [-1015, 15] // Moves from "before start" to "after end"
-          }}
+          animate={{ strokeDashoffset: [-1015, 15] }}
           transition={{
             duration: timing.duration,
             repeat: Infinity,
-            repeatDelay: Math.random() * 5, // Add random pause between pulses
+            repeatDelay: Math.random() * 5,
             delay: timing.delay,
             ease: "linear",
           }}
@@ -240,16 +142,59 @@ export default function Skills() {
   }
   const positions = positionsRef.current;
 
+  // Move scale to state/ref to be responsive
+  const [scale, setScale] = useState(2.5);
+  const nodesRef = useRef<SkillNode[]>([]);
+
+  // Update scale on resize
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setScale(3.6); // Mobile - larger to fill increased brain size
+      } else if (width < 1024) {
+        setScale(5.5); // Tablet
+      } else {
+        setScale(8.5); // Desktop - much larger to fill the big brain
+      }
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const COORDINATE_SCALE = 5;
+    // Recalculate node positions when scale changes
+    // If it's the first init (empty nodes), map from initialSkills
+    // If nodes exist, we might want to preserve current positions but scale them? 
+    // For simplicity and to fix the layout issue, let's re-init target positions based on scale
 
-    nodes = initialSkills.map((s) => {
-      const tx = s.bx * COORDINATE_SCALE;
-      const ty = s.by * COORDINATE_SCALE;
-      return { ...s, x: tx, y: ty, targetX: tx, targetY: ty };
+    // We need to keep the simulation stable. 
+    // Let's perform a smart update: update targetX/targetY based on new scale
+
+    const currentNodes = nodesRef.current.length > 0 ? nodesRef.current : initialSkills.map(s => ({ ...s } as SkillNode));
+
+    // Update targets and initial positions based on new scale
+    currentNodes.forEach((node, i) => {
+      const original = initialSkills[i];
+      const tx = original.bx * scale;
+      const ty = original.by * scale;
+
+      node.targetX = tx;
+      node.targetY = ty;
+
+      // Only snap positions if this is first load (simulation not running yet)
+      if (nodesRef.current.length === 0) {
+        node.x = tx;
+        node.y = ty;
+      }
     });
+
+    nodesRef.current = currentNodes;
+    const nodes = currentNodes;
 
     const links = initialSkills.flatMap((s) =>
       s.connections
@@ -261,13 +206,59 @@ export default function Skills() {
         .filter(Boolean)
     ) as { source: SkillNode; target: SkillNode }[];
 
-    const simulation = d3.forceSimulation(nodes as any)
-      .force("charge", d3.forceManyBody().strength(-100))
-      .force("link", (d3.forceLink(links).distance(55)))
-      .force("collide", d3.forceCollide(45).strength(1))
-      .force("x", d3.forceX((d: any) => d.targetX).strength(0.12))
-      .force("y", d3.forceY((d: any) => d.targetY).strength(0.12))
-      .force("containment", forceContainment as any);
+    // SCALE-DEPENDENT FORCES
+    // As scale increases, we need stronger repulsion and longer links to fill the space
+    const repulsionStrength = -25 * scale;
+    const linkDistance = 8 * scale;
+    const collisionRadius = 5 * scale;
+
+    const simulation = d3force.forceSimulation(nodes as any)
+      .force("charge", d3force.forceManyBody().strength(repulsionStrength))
+      .force("link", (d3force.forceLink(links).distance(linkDistance)))
+      .force("collide", d3force.forceCollide(collisionRadius).strength(0.8))
+      .force("x", d3force.forceX((d: any) => d.targetX).strength(0.1))
+      .force("y", d3force.forceY((d: any) => d.targetY).strength(0.1))
+      .alphaDecay(0.02)
+      .alpha(1)
+      .alphaMin(0.001);
+
+    // Build polygon from the brain path and align it to our node coordinate system
+    const svgEl = containerRef.current.querySelector('#eFs69VwC5ck1') as SVGSVGElement | null;
+    let polygon: [number, number][] | null = null;
+
+    try {
+      if (svgEl) {
+        const paths = Array.from(svgEl.querySelectorAll('path')) as SVGPathElement[];
+        const pathEl = paths.find(p => p.getAttribute('d') && p.getAttribute('d')!.trim().length > 10);
+        if (pathEl) {
+          const pts = pathToPolygon(pathEl, 3);
+          const [cx, cy] = polygonCentroid(pts as any);
+
+          // Use current scale for polygon
+          const polyScale = scale;
+          const tx = -cx * polyScale + CENTER_X;
+          const ty = -cy * polyScale + CENTER_Y;
+          polygon = pts.map(([x, y]) => [(x * polyScale) + tx, (y * polyScale) + ty]);
+
+          const forceShapeContainment = (alpha: number) => {
+            if (!polygon) return;
+            nodes.forEach((node) => {
+              if (!polygonContains(polygon as any, [node.x, node.y])) {
+                const [px, py] = polygonCentroid(polygon as any);
+                node.x += (px - node.x) * alpha * 0.4;
+                node.y += (py - node.y) * alpha * 0.4;
+                node.x += (node.targetX! - node.x) * alpha * 0.1;
+                node.y += (node.targetY! - node.y) * alpha * 0.1;
+              }
+            });
+          };
+
+          simulation.force("containment", forceShapeContainment as any);
+        }
+      }
+    } catch (e) {
+      console.warn('Could not create polygon containment', e);
+    }
 
     simulation.on("tick", () => {
       nodes.forEach((node) => {
@@ -277,18 +268,17 @@ export default function Skills() {
     });
 
     (containerRef.current as any).__simulation = simulation;
-    (containerRef.current as any).__nodes = nodes;
+    // (containerRef.current as any).__nodes = nodes; // No longer needed on DOM
 
     return () => {
       simulation.stop();
     };
-  }, [positions]);
+  }, [positions, scale]); // Re-run when scale changes
 
   const handleDragStart = (id: string) => {
     setDraggingId(id);
     const simulation = (containerRef.current as any)?.__simulation;
-    const nodes = (containerRef.current as any)?.__nodes as SkillNode[];
-    const node = nodes?.find((n) => n.id === id);
+    const node = nodesRef.current.find((n) => n.id === id);
     if (simulation && node) {
       simulation.alphaTarget(0.3).restart();
       node.fx = node.x;
@@ -297,10 +287,8 @@ export default function Skills() {
   };
 
   const handleDrag = (id: string, info: any) => {
-    const nodes = (containerRef.current as any)?.__nodes as SkillNode[];
-    const node = nodes?.find((n) => n.id === id);
+    const node = nodesRef.current.find((n) => n.id === id);
     if (node) {
-      // Sync d3 position with framer motion drag position
       node.fx = positions[id].x.get();
       node.fy = positions[id].y.get();
     }
@@ -309,30 +297,37 @@ export default function Skills() {
   const handleDragEnd = (id: string) => {
     setDraggingId(null);
     const simulation = (containerRef.current as any)?.__simulation;
-    const nodes = (containerRef.current as any)?.__nodes as SkillNode[];
-    const node = nodes?.find((n) => n.id === id);
+    const node = nodesRef.current.find((n) => n.id === id);
     if (simulation && node) {
-      simulation.alphaTarget(0);
+      // Release fixed position
       node.fx = null;
       node.fy = null;
+
+      // Restart simulation with energy to ensure spring-back
+      simulation.alphaTarget(0).restart();
+      simulation.alpha(0.4); // Good energy for smooth return with stronger forces
     }
   };
 
+
   return (
-    <section className="py-28 bg-white relative">
-      <div className="sticky top-0 z-30 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm py-10 mb-5 origin-top">
-        <h2 className="text-center text-4xl font-bold max-h-full text-gray-900">Technical Skills</h2>
+    <section className="py-16 md:py-28 bg-white relative">
+      <div className="sticky top-0 z-30 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm py-6 md:py-10 mb-5 origin-top">
+        <h2 className="text-center text-3xl md:text-4xl lg:text-5xl font-bold max-h-full text-gray-900">Technical Skills</h2>
       </div>
 
-      <div className="overflow-hidden w-full">
+      <div className="overflow-hidden w-full px-4">
         <div
           ref={containerRef}
-          className="relative mx-auto w-full h-[400px] md:h-[700px] flex items-center justify-center overflow-visible -mt-10 md:-mt-20"
-          style={{ transform: "translateZ(0) scale(0.9)" }}
+          className="relative mx-auto w-full h-[400px] sm:h-[450px] md:h-[600px] lg:h-[700px] flex items-center justify-center -mt-6 sm:-mt-10 md:-mt-20"
+          style={{
+            transform: "translateZ(0) scale(1)",
+            transformOrigin: "center center"
+          }}
         >
           {/* Background Decorative SVG */}
-          <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shapeRendering="geometricPrecision" textRendering="geometricPrecision" project-id="9dd035939f82413b8dd7f743180e4a30" export-id="bc5e64b270314740b7ac8b8a4ec32bcc"
-            className="absolute w-[600px] h-[600px] md:w-[1000px] md:h-[1000px] max-w-none opacity-20"
+          <svg id="eFs69VwC5ck1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 300" shapeRendering="geometricPrecision" textRendering="geometricPrecision"
+            className="absolute w-[460px] h-[460px] sm:w-[500px] sm:h-[500px] md:w-[700px] md:h-[700px] lg:w-[1000px] lg:h-[1000px] max-w-none opacity-20"
             style={{
               transform: 'translate(-50%, -45%)',
               top: '50%',
@@ -398,14 +393,13 @@ export default function Skills() {
                   opacity: isOther ? 0.5 : 1,
                   filter: isOther ? "blur(1px)" : "none",
                 }}
-                className="w-10 h-10 md:w-12 md:h-12 -ml-5 -mt-5 md:-ml-6 md:-mt-6 rounded-full bg-white shadow-xl border border-gray-100 cursor-grab active:cursor-grabbing flex items-center justify-center z-20 transition-colors"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 -ml-4 -mt-4 sm:-ml-5 sm:-mt-5 md:-ml-6 md:-mt-6 lg:-ml-7 lg:-mt-7 rounded-full bg-white shadow-xl border border-gray-100 cursor-grab active:cursor-grabbing flex items-center justify-center z-20 transition-colors group"
               >
-                {/* BRAND COLOR APPLIED HERE */}
-                <div className="text-xl md:text-2xl" style={{ color: skill.color }}>
+                <div className="text-base sm:text-xl md:text-2xl lg:text-3xl" style={{ color: skill.color }}>
                   {skill.icon}
                 </div>
 
-                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] font-bold tracking-wide rounded opacity-0 hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30">
+                <div className="absolute -bottom-6 sm:-bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[9px] sm:text-[10px] md:text-xs font-bold tracking-wide rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30">
                   {skill.name}
                 </div>
               </motion.div>
