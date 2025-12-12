@@ -9,6 +9,7 @@
   body {
     @apply font-primary bg-primary text-white leading-loose;
   }
+
   .h1 {
     @apply text-[48px] xl:text-[80px] leading-[1.1] font-semibold;
   }
@@ -18,21 +19,28 @@
   .h3 {
     @apply text-[20px] xl:text-[24px] leading-[1.1] font-semibold;
   }
+
   .text-outline {
     -webkit-text-stroke: 1px #ffffff;
   }
   .text-outline-hover {
     -webkit-text-stroke: 1px #00ff99;
   }
+
   .theme {
     --animate-orbit: orbit calc(var(--duration)*1s) linear infinite;
+  }
+
+  * {
+    @apply border-border;
   }
 }
 
 @layer utilities {
   .slow-spin {
-    animation: spin 4s linear infinite; /* Adjust 4s to your desired duration */
+    animation: spin 4s linear infinite;
   }
+
   @keyframes float-slow {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-20px); }
@@ -45,6 +53,7 @@
     0%, 100% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-10px) rotate(5deg); }
   }
+
   .animate-float-slow {
     animation: float-slow 6s ease-in-out infinite;
   }
@@ -56,20 +65,12 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-}
-
-@theme inline {
-  @keyframes orbit {
+@keyframes orbit {
   0% {
-    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
-    }
+    transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(-1 * var(--angle)));
+  }
   100% {
-    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px)) rotate(calc((var(--angle) * -1deg) - 360deg));
-    }
+    transform: rotate(calc(var(--angle) + 360deg)) translateX(var(--radius)) rotate(calc(-1 * (var(--angle) + 360deg)));
   }
 }
 
@@ -79,20 +80,7 @@
   left: 50%;
   width: var(--icon-size);
   height: var(--icon-size);
-  transform:
-    rotate(var(--angle)) 
-    translateX(var(--radius)) 
-    rotate(calc(-1 * var(--angle)));
   animation: orbit var(--duration) linear infinite;
-}
-
-@keyframes orbit {
-  0% {
-    transform: rotate(var(--angle)) translateX(var(--radius)) rotate(calc(-1 * var(--angle)));
-  }
-  100% {
-    transform: rotate(calc(var(--angle) + 360deg)) translateX(var(--radius)) rotate(calc(-1 * (var(--angle) + 360deg)));
-  }
 }
 
 @font-face {

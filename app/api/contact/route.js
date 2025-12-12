@@ -11,6 +11,19 @@ export async function POST(req) {
     });
   }
 
+  // Check if GMAIL_APP_PASSWORD is configured
+  if (!process.env.GMAIL_APP_PASSWORD) {
+    console.warn(
+      "GMAIL_APP_PASSWORD is not defined. Simulating email send.\n",
+      "To: abhinavyadav8+port@gmail.com\n",
+      "From:", firstname, email, "\n",
+      "Message:", message
+    );
+    // Simulate delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  }
+
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
