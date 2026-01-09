@@ -2,11 +2,16 @@ import { db } from "@/lib/db";
 import { posts } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { verifyAuth } from "@/lib/auth";
 
-export async function DELETE(req) {
-  // Removed Clerk check
-  // const { userId } = await auth();
-  // if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+async function handleDelete(req) {
+  // Temporarily removed auth check to match other routes
+  /*
+  const user = await verifyAuth();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  */
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
@@ -23,4 +28,16 @@ export async function DELETE(req) {
     console.error(error);
     return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
   }
+}
+
+export async function GET(req) {
+  return handleDelete(req);
+}
+
+export async function POST(req) {
+  return handleDelete(req);
+}
+
+export async function DELETE(req) {
+  return handleDelete(req);
 }

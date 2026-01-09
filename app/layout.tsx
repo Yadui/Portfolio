@@ -3,7 +3,7 @@ import "./globals.css";
 
 // Components
 import PageTransition from "@/components/PageTransition";
-import TabDinoGame from "@/components/TabDinoGame";
+import TabPacman from "@/components/TabPacman";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -13,10 +13,10 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata = {
   title: {
-    default: "Abhinav Yadav | Software Engineer & Creative Developer",
+    default: "Abhinav · · · Yadav",
     template: "%s | Abhinav Yadav"
   },
-  description: "Portfolio of Abhinav Yadav, a passionate Software Engineer and Creative Developer specializing in modern web technologies, React, Next.js, and interactive design.",
+  description: "Portfolio of Abhinav · · · Yadav, a passionate Software Engineer and Creative Developer.",
   keywords: ["Software Engineer", "Web Developer", "React", "Next.js", "Creative Developer", "Portfolio", "Abhinav Yadav", "Frontend", "Full Stack"],
   authors: [{ name: "Abhinav Yadav" }],
   creator: "Abhinav Yadav",
@@ -44,9 +44,9 @@ export const metadata = {
     images: ["/og-image.png"],
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/pacman.svg",
+    shortcut: "/pacman.svg",
+    apple: "/pacman.svg",
   },
 };
 
@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={jetbrainsMono.variable}>
-        <TabDinoGame />
+        <TabPacman />
         <PageTransition>
           {children}
         </PageTransition>

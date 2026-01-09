@@ -11,7 +11,7 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(Flip);
 
-const Header = ({ initialAnimEnabled = true }) => {
+const Header = ({ initialAnimEnabled = true, arrowRef }) => {
   const containerRef = useRef(null);
   const introHelloRef = useRef(null);
   const headerHelloRef = useRef(null);
@@ -122,36 +122,52 @@ const Header = ({ initialAnimEnabled = true }) => {
 
       <section className="h-screen relative flex flex-col overflow-hidden">
         {/* Background Image */}
-        <div className="absolute inset-0 w-full h-full z-0">
-            <Image 
-                src="/assets/backgrounds/header-fractal.jpg"
-                alt="Fractal Background"
-                fill
-                className="object-cover"
-                priority
-            />
+        <div className="absolute inset-0 overflow-hidden">
+            <Image
+    src="/assets/backgrounds/header-fractal.jpg"
+    alt=""
+    width={2400}   // real design width
+    height={200}  // real design height
+    className="
+      absolute
+      min-w-[2400px]
+      min-h-[200px]
+    "
+    priority
+  />
             {/* Optional: Subtle gradient overlay for bottom half readability if needed */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20"></div>
         </div>
 
         {/* Top Half - White Background */}
-        <div className="h-1/2 w-full flex flex-col justify-center px-4 md:px-0 relative z-1">
-            <div className="container mr-auto ml-8">
-                <div className="flex flex-col items-start justify-center">
-                    <h1 ref={headerHelloRef} id="header-hello" className="text-7xl md:text-9xl font-bold text-white tracking-tighter leading-none opacity-0 m-0 p-0">
-                        Hello!
-                    </h1>
-                    <motion.h2 
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={animationComplete ? { opacity: 1, y: 0 } : {}}
-                      transition={{ duration: introSkipped ? 0 : 0.8 }}
-                      className="mt-2 text-5xl md:text-7xl font-medium text-white/ tracking-tight"
-                    >
-                        I'm Abhinav.
-                    </motion.h2>
-                </div>
-            </div>
-        </div>
+        <div className="h-1/2 w-full flex flex-col justify-center relative z-10">
+  <div className="flex flex-col items-start justify-center pl-8 md:pl-16">
+    <h1
+      ref={headerHelloRef}
+      className="text-7xl md:text-9xl font-bold text-white tracking-tighter leading-none opacity-0 m-0 p-0 -ml-[0.08em]"
+    >
+      Hello!
+    </h1>
+
+    <motion.h2
+      initial={{ opacity: 0, y: 20 }}
+      animate={animationComplete ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: introSkipped ? 0 : 0.8 }}
+      className="mt-2 text-5xl font-medium text-white tracking-tight m-0 p-0 -ml-[0.08em]"
+    >
+      I'm Abhinav.
+    </motion.h2>
+
+    <motion.h2
+      initial={{ opacity: 0, y: 20 }}
+      animate={animationComplete ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: introSkipped ? 0 : 0.8 }}
+      className="mt-2 text-lg md:text-2xl font-medium text-white tracking-tight m-0 p-0"
+    >
+      I'm a Cloud Architect & Full Stack Developer based in Gurugram, India.
+    </motion.h2>
+  </div>
+</div>
 
         {/* Navigation Branches (Right Side) */}
         <div className="absolute left-12 top-32 h-full w-[300px] md:w-[400px] z-10 flex flex-col justify-center items-start pr-8 md:pr-16 gap-12 md:gap-16">
@@ -169,18 +185,12 @@ const Header = ({ initialAnimEnabled = true }) => {
         </div>
 
         {/* Bottom Half - Transparent to show Background Image */}
-        <div className="h-1/2 w-full relative z-1">
-            {/* Bottom Arrow */}
-            <motion.div 
-                initial={{ opacity: 0 }}
-                animate={animationComplete ? { opacity: 1 } : {}}
-                transition={{ delay: introSkipped ? 0 : 0.5, duration: introSkipped ? 0 : 0.5 }}
-                className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
-            >
-              <a href="#projects">
-                <BsArrowDown className="text-4xl text-white animate-bounce" />
-              </a>
-            </motion.div>
+        <div
+          ref={arrowRef}
+          className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50"
+        >
+          <BsArrowDown className="text-4xl text-white" />
+          <span className="text-sm tracking-widest text-white/70">WHAT I DO</span>
         </div>
       </section>
     </div>

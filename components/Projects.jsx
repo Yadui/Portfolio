@@ -6,8 +6,13 @@ import { BsArrowUpRight, BsGithub } from "react-icons/bs";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { Flip } from "gsap/Flip";
+
+
+
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(Flip);
 
 const projects = [
   {
@@ -87,7 +92,12 @@ const Card = ({ i, title, description, stack, image, links, category, progress, 
     <div ref={container} className="h-screen flex items-center justify-center sticky top-0">
       <div 
         ref={cardInner}
-        className="relative flex flex-col md:flex-row gap-8 w-full max-w-[1000px] h-[600px] rounded-[30px] p-8 md:p-12 border border-white/10 overflow-hidden origin-top shadow-2xl"
+        className="relative flex flex-col md:flex-row gap-8 w-full max-w-[1000px] h-[600px] rounded-[30px] p-8 md:p-12 overflow-hidden origin-top before:absolute before:inset-0 before:rounded-[30px]
+before:bg-gradient-to-br before:from-white/[0.08] before:to-transparent
+before:pointer-events-none
+after:absolute after:inset-0 after:rounded-[30px]
+after:bg-black/40 after:opacity-0 hover:after:opacity-100
+after:transition-opacity after:duration-500"
         style={{ 
             backgroundColor: "#18181b",
             top: `calc(-5% + ${i * 25}px)` // Offset slightly so we can see the stack
@@ -109,7 +119,7 @@ const Card = ({ i, title, description, stack, image, links, category, progress, 
                     {title}
                 </h2>
                 
-                <p className="text-white/60 text-lg leading-relaxed mb-8">
+                <p className="text-white/70 text-[17px] leading-[1.7] max-w-[90%] text-lg mb-8">
                     {description}
                 </p>
 
@@ -158,7 +168,8 @@ const Card = ({ i, title, description, stack, image, links, category, progress, 
                         fill 
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#18181b]/80"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#18181b] via-[#18181b]/40 to-transparent" />
+<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
             ) : (
                 <div className="w-full h-full bg-gradient-to-br from-accent/5 to-transparent flex items-center justify-center border-l border-white/5">
@@ -173,8 +184,9 @@ const Card = ({ i, title, description, stack, image, links, category, progress, 
   );
 };
     
-const Projects = () => {
-  const container = useRef(null);
+const Projects = ({ arrowRef, whatIDoRef }) => {
+    const container = useRef(null);
+    
   
   useGSAP(() => {
     const cards = gsap.utils.toArray(".sticky-card");
@@ -198,21 +210,32 @@ const Projects = () => {
     });
   }, { scope: container }); 
 
+  useGSAP(() => {
+  if (!arrowRef.current || !whatIDoRef.current) return;
 
+  const state = Flip.getState(arrowRef.current);
+
+  whatIDoRef.current.appendChild(arrowRef.current);
+
+  Flip.from(state, {
+    duration: 1,
+    ease: "power4.inOut",
+    scrollTrigger: {
+      trigger: "#projects",
+      start: "top center",
+      toggleActions: "play none none reverse",
+    },
+  });
+});
   return (
     <section id="projects" ref={container} className="bg-black relative">
         <div className="container mx-auto px-4 py-24">
             {/* Sticky Header - We put it in the same flex container or ensure wrapper is tight */}
             <div className="flex flex-col pb-0 relative">
                 {/* Title inside the relative container so sticky context aligns */}
-                <div className="sticky top-0 z-20 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm py-10 mb-10 origin-top">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                        What I Do
-                    </h2>
-                    <p className="text-white/60 max-w-2xl mx-auto text-center">
-                        A showcase of my technical projects and architectural solutions.
-                    </p>
-                </div>
+                <h2 ref={whatIDoRef} className="text-4xl md:text-5xl font-bold text-white">
+  What I Do
+</h2>
 
                 {projects.map((project, index) => {
                     return (
@@ -240,7 +263,7 @@ const Projects = () => {
                                             {project.title}
                                         </h2>
                                         
-                                        <p className="text-white/60 text-lg leading-relaxed mb-8">
+                                        <p className="text-white/70 text-[17px] leading-[1.7] max-w-[90%] mb-8">
                                             {project.description}
                                         </p>
 
