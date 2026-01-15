@@ -10,7 +10,7 @@ const TabPacman = () => {
     let frame = 0;
     let interval = null;
 
-    const PACMAN = ["ᗧ", "ᗤ"];
+    const PACMAN = ["ᗧ", "ᗧ"];
     const DOT = "·";
     const SPACE = "\u00A0";
     const TRACK_LENGTH = 12;
